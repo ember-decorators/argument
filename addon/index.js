@@ -1,0 +1,53 @@
+import { DEBUG } from '@glimmer/env';
+import { getWithDefault } from '@ember/object';
+import config from 'ember-get-config';
+
+import { validationDecorator } from 'ember-argument-decorators/-debug';
+
+export { immutable, required, type } from 'ember-argument-decorators/-debug';
+
+const initializersMap = new WeakMap();
+
+function initializersFor(target) {
+  if (!initializersMap.has(target)) {
+    const parentInitializers = initializersMap.get(Object.getPrototypeOf(target));
+    initializersMap.set(target, Object.create(parentInitializers || null));
+  }
+
+  return initializersMap.get(target);
+}
+
+let argument = function(target, key, desc, validations) {
+  if (DEBUG) {
+    validations.isArgument = true;
+    validations.typeRequired = getWithDefault(config, 'emberArgumentDecorators.typeRequired', false);
+  }
+
+  // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
+  desc.writable = true;
+  desc.configurable = true;
+
+  if (desc.initializer === null) return;
+
+  const initializers = initializersFor(target);
+  initializers[key] = desc.initializer;
+
+  desc.initializer = function() {
+    let value;
+
+    if(this.hasOwnProperty(key) === true) {
+      value = this[key];
+    } else {
+      const initializers = initializersFor(Object.getPrototypeOf(this));
+      value = initializers[key].call(this);
+    }
+
+    return value;
+  }
+}
+
+if (DEBUG) {
+  argument = validationDecorator(argument);
+}
+
+export { argument };

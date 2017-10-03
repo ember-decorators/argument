@@ -1,11 +1,11 @@
-# ember-arg-type-decorators
+# ember-argument-decorators
 
 This README outlines the details of collaborating on this Ember addon.
 
 ## Installation
 
 * `git clone <repository-url>` this repository
-* `cd ember-arg-type-decorators`
+* `cd ember-argument-decorators`
 * `npm install`
 
 ## Running
