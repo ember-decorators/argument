@@ -7,9 +7,7 @@ const VersionChecker = require('ember-cli-version-checker');
 const Funnel = require('broccoli-funnel');
 
 function isProductionEnv() {
-  const isProd = /production/.test(process.env.EMBER_ENV);
-
-  return isProd;
+  return /production/.test(process.env.EMBER_ENV);
 }
 
 module.exports = {

@@ -2,10 +2,17 @@
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+const Funnel = require('broccoli-funnel');
+
+function isProductionEnv() {
+  return /production/.test(process.env.EMBER_ENV);
+}
 
 module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
-    // Add options here
+    trees: {
+      tests: isProductionEnv() ? new Funnel('tests', { exclude: ['unit/-debug'] }) : 'tests'
+    }
   });
 
   /*

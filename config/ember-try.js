@@ -139,6 +139,13 @@ module.exports = {
       npm: {
         devDependencies: {}
       }
+    },
+    {
+      name: 'ember-default-production',
+      command: 'ember test --environment=production',
+      npm: {
+        devDependencies: {}
+      }
     }
   ]
 };
