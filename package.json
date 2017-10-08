@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@ember-decorators/utils": "~0.1.0",
-    "babel-plugin-filter-imports": "https://github.com/pzuraq/babel-plugin-filter-imports.git#c1f81449a70ff317da5f7ee491049eef49783619",
+    "babel-plugin-filter-imports": "^1.1.0",
     "broccoli-funnel": "^2.0.1",
     "ember-cli-babel": "^6.3.0",
     "ember-cli-version-checker": "^2.0.0",
