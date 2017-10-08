@@ -1,8 +1,6 @@
 import Component from '@ember/component';
-import { getWithDefault } from '@ember/object';
 import { assert } from '@ember/debug';
 
-import config from 'ember-get-config';
 import {
   GTE_EMBER_1_13,
   HAS_MODERN_FACTORY_INJECTIONS
@@ -18,7 +16,7 @@ const whitelist = {
   class: true
 };
 
-if (GTE_EMBER_1_13 && getWithDefault(config, 'emberArgumentDecorators.requireComponentArguments', true)) {
+if (GTE_EMBER_1_13) {
   validatedComponent = Component.extend()
 
   validatedComponent.reopenClass({

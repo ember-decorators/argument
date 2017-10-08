@@ -29,7 +29,7 @@ module.exports = {
   },
 
   treeForAddon(tree) {
-    const filteredTree = !(isProductionEnv() && !this.disableCodeStripping) ? tree : new Funnel(tree, {
+    const filteredTree = !(isProductionEnv() && !this.options.disableCodeStripping) ? tree : new Funnel(tree, {
       exclude: [
         '-debug',
         'errors.js',
@@ -52,7 +52,7 @@ module.exports = {
 
     opts.loose = true;
 
-    if (isProductionEnv() && !this.disableCodeStripping) {
+    if (isProductionEnv() && !this.options.disableCodeStripping) {
       opts.plugins.push(
         [FilterImports, {
           imports: {
@@ -75,7 +75,7 @@ module.exports = {
 
     let parentOptions = this._getParentOptions();
 
-    this.disableCodeStripping = parentOptions.emberArgumentDecorators && parentOptions.emberArgumentDecorators.disableCodeStripping
+    this.options = parentOptions.emberArgumentDecorators || {};
 
     this._setupBabelOptions();
 
@@ -89,7 +89,7 @@ module.exports = {
         // Create and pull off babel plugins
         let plugins = parentOptions.babel.plugins = parentOptions.babel.plugins || [];
 
-        if (isProductionEnv() && !this.disableCodeStripping) {
+        if (isProductionEnv() && !this.options.disableCodeStripping) {
           plugins.push(
             [FilterImports, {
               imports: {
@@ -112,7 +112,7 @@ module.exports = {
               }
             }]
           );
-        } else {
+        } else if (!this.options.disableValidatedComponent) {
           plugins.push([ValidatedComponentTransform]);
         }
       } else {
