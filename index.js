@@ -113,7 +113,7 @@ module.exports = {
             }]
           );
         } else if (!this.addonOptions.disableValidatedComponent) {
-          plugins.push([ValidatedComponentTransform]);
+          plugins.push(ValidatedComponentTransform);
         }
       } else {
         app.project.ui.writeWarnLine(
