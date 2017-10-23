@@ -8,6 +8,7 @@ import { test } from 'qunit';
 import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
 
 import { argument } from 'ember-argument-decorators';
+import { attribute, className } from 'ember-decorators/component';
 
 if (GTE_EMBER_1_13) {
   let originalTestAdapterException;
@@ -25,7 +26,7 @@ if (GTE_EMBER_1_13) {
       }
    });
 
-  test('asserts on attrs which are not defined', function(assert) {
+  test('asserts on args which are not defined', function(assert) {
     class FooComponent extends Component {}
 
     this.register('component:foo-component', FooComponent);
@@ -35,11 +36,35 @@ if (GTE_EMBER_1_13) {
     }, /Attempted to assign 'foo'/);
   });
 
-  test('does not assert on attrs which are defined', function(assert) {
+  test('does not assert on args which are defined', function(assert) {
     assert.expect(0);
 
     class FooComponent extends Component {
       @argument foo;
+    }
+
+    this.register('component:foo-component', FooComponent);
+
+    this.render(hbs`{{foo-component foo=123}}`);
+  });
+
+  test('does not assert on attributes which are defined', function(assert) {
+    assert.expect(0);
+
+    class FooComponent extends Component {
+      @attribute foo;
+    }
+
+    this.register('component:foo-component', FooComponent);
+
+    this.render(hbs`{{foo-component foo=123}}`);
+  });
+
+  test('does not assert on classNames which are defined', function(assert) {
+    assert.expect(0);
+
+    class FooComponent extends Component {
+      @className foo;
     }
 
     this.register('component:foo-component', FooComponent);
