@@ -21,10 +21,13 @@ if (GTE_EMBER_1_13) {
 
   validatedComponent.reopenClass({
     create(props) {
+      // First create the instance to realize any dynamically added bindings or fields
+      const instance = this._super(...arguments);
+
       const prototype = HAS_MODERN_FACTORY_INJECTIONS ? this.prototype : this.__super__;
       const validations = validationsFor(prototype);
-      const attributes = (prototype.attributeBindings || []);
-      const classNames = (prototype.classNameBindings || []).map((binding) => binding.split(':')[0]);
+      const attributes = (instance.attributeBindings || []);
+      const classNames = (instance.classNameBindings || []).map((binding) => binding.split(':')[0]);
 
       for (let key in props.attrs) {
         const isValidArgOrAttr =
@@ -39,7 +42,7 @@ if (GTE_EMBER_1_13) {
         );
       }
 
-      return this._super(...arguments);
+      return instance;
     }
   });
 } else {

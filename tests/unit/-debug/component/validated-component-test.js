@@ -71,4 +71,21 @@ if (GTE_EMBER_1_13) {
 
     this.render(hbs`{{foo-component foo=123}}`);
   });
+
+  test('does not assert on classNames or attributes which are defined dynamically', function(assert) {
+    assert.expect(0);
+
+    class FooComponent extends Component {
+      constructor() {
+        super(...arguments);
+
+        this.attributeBindings = ['data-test'];
+        this.classNameBindings = ['foo']
+      }
+    }
+
+    this.register('component:foo-component', FooComponent);
+
+    this.render(hbs`{{foo-component foo=123 data-test=true}}`);
+  });
 }
