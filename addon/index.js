@@ -8,13 +8,17 @@ export { immutable, required, type } from 'ember-argument-decorators/-debug';
 
 const initializersMap = new WeakMap();
 
-function initializersFor(target) {
+function createInitializersFor(target) {
   if (!initializersMap.has(target)) {
     const parentInitializers = initializersMap.get(Object.getPrototypeOf(target));
     initializersMap.set(target, Object.create(parentInitializers || null));
   }
 
   return initializersMap.get(target);
+}
+
+function getInitializersFor(target) {
+  return initializersMap.get(target) || getInitializersFor(Object.getPrototypeOf(target));
 }
 
 let argument = function(target, key, desc, validations) {
@@ -29,7 +33,7 @@ let argument = function(target, key, desc, validations) {
 
   if (desc.initializer === null) return;
 
-  const initializers = initializersFor(target);
+  const initializers = createInitializersFor(target);
   initializers[key] = desc.initializer;
 
   desc.initializer = function() {
@@ -38,7 +42,7 @@ let argument = function(target, key, desc, validations) {
     if(this.hasOwnProperty(key) === true) {
       value = this[key];
     } else {
-      const initializers = initializersFor(Object.getPrototypeOf(this));
+      const initializers = getInitializersFor(Object.getPrototypeOf(this));
       value = initializers[key].call(this);
     }
 

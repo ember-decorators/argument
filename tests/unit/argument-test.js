@@ -59,3 +59,24 @@ test('it works with the ES class hierarchy', function(assert) {
   assert.equal(baz.get('anotherProp'), 4, 'argument cannot override class field');
   assert.equal(bazWithValues.get('anotherProp'), 4, 'argument passed in cannot override class field');
 });
+
+test('it works with the ES class hierarchy up the prototype chain', function(assert) {
+  class Foo extends EmberObject {
+    @argument
+    prop = 1;
+  }
+
+  class Bar extends Foo {
+  }
+
+  class Baz extends Bar {
+  }
+
+  const baz = Baz.create({});
+
+  const bazWithValues = Baz.create({ prop: 7 });
+
+  assert.equal(baz.get('prop'), 1, 'argument default is set');
+
+  assert.equal(bazWithValues.get('prop'), 7, 'subclass argument default can be overriden');
+});
