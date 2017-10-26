@@ -11,9 +11,12 @@ import { validationsFor } from '@ember-decorators/utils/debug';
 let validatedComponent;
 
 const whitelist = {
+  ariaRole: true,
+  class: true,
+  classNames: true,
   id: true,
-  tagName: true,
-  class: true
+  isVisible: true,
+  tagName: true
 };
 
 if (GTE_EMBER_1_13) {

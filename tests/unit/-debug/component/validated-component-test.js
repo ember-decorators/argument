@@ -88,4 +88,24 @@ if (GTE_EMBER_1_13) {
 
     this.render(hbs`{{foo-component foo=123 data-test=true}}`);
   });
+
+  test('does not assert on whitelisted arguments and attributes', function(assert) {
+    assert.expect(0);
+
+    class FooComponent extends Component {
+    }
+
+    this.register('component:foo-component', FooComponent);
+
+    this.render(hbs`
+      {{foo-component
+        ariaRole="button"
+        class="bar"
+        classNames="bar baz"
+        id="foo"
+        isVisible=true
+        tagName="button"
+      }}
+    `);
+  });
 }
