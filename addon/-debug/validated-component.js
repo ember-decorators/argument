@@ -1,12 +1,14 @@
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
 
+import './utils/validation-decorator';
+
 import {
   GTE_EMBER_1_13,
   HAS_MODERN_FACTORY_INJECTIONS
 } from 'ember-compatibility-helpers';
 
-import { validationsFor } from '@ember-decorators/utils/debug';
+import { getValidationsFor } from './utils/validations-for';
 
 let validatedComponent;
 
@@ -28,7 +30,7 @@ if (GTE_EMBER_1_13) {
       const instance = this._super(...arguments);
 
       const prototype = HAS_MODERN_FACTORY_INJECTIONS ? this.prototype : this.__super__;
-      const validations = validationsFor(prototype);
+      const validations = getValidationsFor(prototype) || {};
       const attributes = (instance.attributeBindings || []);
       const classNames = (instance.classNameBindings || []).map((binding) => binding.split(':')[0]);
 

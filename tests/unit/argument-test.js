@@ -66,17 +66,21 @@ test('it works with the ES class hierarchy up the prototype chain', function(ass
     prop = 1;
   }
 
-  class Bar extends Foo {
+  class Bar extends Foo {}
+
+  class Baz extends Bar {}
+
+  class Quix extends Baz {
+    @argument
+    anotherProp = 2;
   }
 
-  class Baz extends Bar {
-  }
+  const quix = Quix.create({});
+  const quixWithValues = Baz.create({ prop: 7, anotherProp: 7 });
 
-  const baz = Baz.create({});
+  assert.equal(quix.get('prop'), 1, 'argument default is set');
+  assert.equal(quix.get('anotherProp'), 2, 'argument default is set');
 
-  const bazWithValues = Baz.create({ prop: 7 });
-
-  assert.equal(baz.get('prop'), 1, 'argument default is set');
-
-  assert.equal(bazWithValues.get('prop'), 7, 'subclass argument default can be overriden');
+  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
+  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
 });

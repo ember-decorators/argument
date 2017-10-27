@@ -2,14 +2,6 @@
 # yarn lockfile v1
 
 
-"@ember-decorators/utils@~0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@ember-decorators/utils/-/utils-0.1.0.tgz#9b47965520b5b43643fb00441e2b340130d28157"
-  dependencies:
-    babel-plugin-filter-imports "^1.0.4"
-    broccoli-funnel "^2.0.1"
-    ember-cli-babel "^6.3.0"
-
 "@glimmer/compiler@^0.25.3":
   version "0.25.3"
   resolved "https://registry.yarnpkg.com/@glimmer/compiler/-/compiler-0.25.3.tgz#25eb06394f3ba1c1fae5af25c9cf7deb2c11ef4e"
@@ -652,13 +644,6 @@ babel-plugin-feature-flags@^0.3.1:
 babel-plugin-filter-imports@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-filter-imports/-/babel-plugin-filter-imports-0.3.1.tgz#e7859b56886b175dd2616425d277b219e209ea8b"
-
-babel-plugin-filter-imports@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/babel-plugin-filter-imports/-/babel-plugin-filter-imports-1.0.4.tgz#356aea4f8d3ec5a2cc69d7c916daeb8f554c6f7c"
-  dependencies:
-    babel-types "^6.26.0"
-    lodash "^4.17.4"
 
 babel-plugin-filter-imports@^1.1.0:
   version "1.1.0"
