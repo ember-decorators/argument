@@ -30,7 +30,9 @@ export function makeValidator(desc, fn) {
 }
 
 export function resolveValidator(type) {
-  if (type.isValidator === true) {
+  if (type === null || type === undefined) {
+    return type === null ? primitiveTypeValidators.null : primitiveTypeValidators.undefined;
+  } else if (type.isValidator === true) {
     return type;
   } else if (typeof type === 'function') {
     return instanceOf(type);
@@ -39,6 +41,6 @@ export function resolveValidator(type) {
 
     return primitiveTypeValidators[type];
   } else {
-    assert(`Types must either be a primitive type string, a class, or a validator, received: ${type}`, false);
+    assert(`Types must either be a primitive type string, class, validator, or null or undefined, received: ${type}`, false);
   }
 }
