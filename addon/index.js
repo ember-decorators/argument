@@ -8,9 +8,9 @@ export { immutable, required, type } from 'ember-argument-decorators/-debug';
 
 const initializersMap = new WeakMap();
 
-function createInitializersFor(target) {
+function getOrCreateInitializersFor(target) {
   if (!initializersMap.has(target)) {
-    const parentInitializers = initializersMap.get(Object.getPrototypeOf(target));
+    const parentInitializers = getInitializersFor(Object.getPrototypeOf(target));
     initializersMap.set(target, Object.create(parentInitializers || null));
   }
 
@@ -18,6 +18,9 @@ function createInitializersFor(target) {
 }
 
 function getInitializersFor(target) {
+  // Reached the root of the prototype chain
+  if (target === null) return target;
+
   return initializersMap.get(target) || getInitializersFor(Object.getPrototypeOf(target));
 }
 
@@ -33,7 +36,7 @@ let argument = function(target, key, desc, validations) {
 
   if (desc.initializer === null) return;
 
-  const initializers = createInitializersFor(target);
+  const initializers = getOrCreateInitializersFor(target);
   initializers[key] = desc.initializer;
 
   desc.initializer = function() {

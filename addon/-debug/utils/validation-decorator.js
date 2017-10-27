@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import { computed, get } from '@ember/object';
 
-import { validationsFor, validationsForKey } from '@ember-decorators/utils/debug';
+import { getValidationsFor, getValidationsForKey } from './validations-for';
 
 import { SUPPORTS_NEW_COMPUTED } from 'ember-compatibility-helpers';
 
@@ -41,7 +41,7 @@ EmberObject.reopenClass({
 
     const constructor = this;
     const prototype = Object.getPrototypeOf(instance);
-    const validations = validationsFor(prototype);
+    const validations = getValidationsFor(prototype);
 
     for (let key in validations) {
       const {
@@ -96,7 +96,7 @@ EmberObject.reopenClass({
 
 export default function validationDecorator(fn) {
   return function(target, key, desc) {
-    const validations = validationsForKey(target, key);
+    const validations = getValidationsForKey(target, key);
 
     // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
     desc.writable = true;

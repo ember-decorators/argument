@@ -57,6 +57,32 @@ test('it throws if an incorrect value is provided', function(assert) {
   }, /bar expected value of type string, but received: 2/);
 });
 
+test('it works with the class hierarchy', function(assert) {
+  class Foo extends EmberObject {
+    @type('string')
+    @argument
+    prop;
+  }
+
+  class Bar extends Foo {}
+
+  class Baz extends Bar {}
+
+  class Quix extends Baz {
+    @type('number')
+    @argument
+    anotherProp = 2;
+  }
+
+  assert.throws(() => {
+    Quix.create({ prop: 2 });
+  }, /prop expected value of type string, but received: 2/);
+
+  assert.throws(() => {
+    Quix.create({ anotherProp: 'val' });
+  }, /anotherProp expected value of type number, but received: val/);
+});
+
 test('it throws if an incorrect default default value is provided', function(assert) {
   assert.throws(() => {
     // no default
