@@ -55,7 +55,7 @@ test('it requires primitive types or classes', function(assert) {
     }
 
     Foo.create({ bar: 2 });
-  }, /Types must either be a primitive type string, a class, or a validator, received: 2/);
+  }, /Types must either be a primitive type string, class, validator, or null or undefined, received: 2/);
 
   assert.throws(() => {
     class Foo extends EmberObject {
@@ -65,7 +65,7 @@ test('it requires primitive types or classes', function(assert) {
     }
 
     Foo.create({ bar: 2 });
-  }, /Types must either be a primitive type string, a class, or a validator, received: true/);
+  }, /Types must either be a primitive type string, class, validator, or null or undefined, received: true/);
 
   assert.throws(() => {
     class Foo extends EmberObject {
@@ -75,7 +75,7 @@ test('it requires primitive types or classes', function(assert) {
     }
 
     Foo.create({ bar: 2 });
-  }, /Types must either be a primitive type string, a class, or a validator, received: \[object Object\]/);
+  }, /Types must either be a primitive type string, class, validator, or null or undefined, received: \[object Object\]/);
 
   assert.throws(() => {
     class Foo extends EmberObject {
@@ -85,7 +85,7 @@ test('it requires primitive types or classes', function(assert) {
     }
 
     Foo.create({ bar: 2 });
-  }, /Types must either be a primitive type string, a class, or a validator, received:/);
+  }, /Types must either be a primitive type string, class, validator, or null or undefined, received:/);
 });
 
 test('it throws if incorrect number of items passed in', function(assert) {

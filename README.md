@@ -74,13 +74,16 @@ Primitive types include:
 * `symbol`
 * `null`
 * `undefined`
+* `NaN`
 
 Each of the above maps directly to their respective Javascript primitive types. In addition, there are
 several special primitives:
 
 * `any`: Any type of value
 * `action`: Union type of `string` and `function`. Use this to declare actions that the component sends
-* `class`: Any function that is specifically a class constructor
+* `class`: Any function that extends from Ember Object (we want to allow this to work with ES Classes in the future, stay tuned!)
+
+You can also pass `null` and `undefined` directly as types for convenience
 
 Type helpers include:
 
@@ -96,10 +99,10 @@ import Component from '@ember/component';
 import { type } from 'ember-argument-decorators';
 
 export default class ExampleComponent extends Component {
-  @type('string')
+  @type(null, 'string')
   arg = 'default';
 
-  @type(Date)
+  @type(undefined, Date)
   foo;
 
   @type(unionOf('string', 'number', Date))

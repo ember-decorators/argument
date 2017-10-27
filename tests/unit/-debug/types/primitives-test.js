@@ -50,5 +50,8 @@ primitiveTypeTest('NaN');
 primitiveTypeTest('null');
 primitiveTypeTest('undefined');
 
+primitiveTypeTest(null, ['null']);
+primitiveTypeTest(undefined, ['undefined']);
+
 primitiveTypeTest('action', ['string', 'function']);
 primitiveTypeTest('any', Object.keys(primitives));
