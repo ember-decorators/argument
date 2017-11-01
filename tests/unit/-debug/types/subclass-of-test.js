@@ -1,8 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, type } from 'ember-argument-decorators';
-import { subclassOf } from 'ember-argument-decorators/types';
+import { argument, type } from '@ember-decorators/arguments';
+import { subclassOf } from '@ember-decorators/arguments/types';
 
 module('subclassOf');
 

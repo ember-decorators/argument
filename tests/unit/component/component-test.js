@@ -5,7 +5,7 @@ import { moduleForComponent } from 'ember-qunit';
 import { test } from 'qunit';
 
 
-import { argument, type } from 'ember-argument-decorators';
+import { argument, type } from '@ember-decorators/arguments';
 import { find } from 'ember-native-dom-helpers';
 
 moduleForComponent('component', { integration: true });
