@@ -2,9 +2,9 @@ import { DEBUG } from '@glimmer/env';
 import { getWithDefault } from '@ember/object';
 import config from 'ember-get-config';
 
-import { validationDecorator } from '@ember-decorators/arguments/-debug';
+import { validationDecorator } from '@ember-decorators/argument/-debug';
 
-export { immutable, required, type } from '@ember-decorators/arguments/-debug';
+export { immutable, required, type } from '@ember-decorators/argument/-debug';
 
 const initializersMap = new WeakMap();
 

@@ -1,8 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, type } from '@ember-decorators/arguments';
-import { shapeOf } from '@ember-decorators/arguments/types';
+import { argument, type } from '@ember-decorators/argument';
+import { shapeOf } from '@ember-decorators/argument/types';
 
 module('shapeOf');
 

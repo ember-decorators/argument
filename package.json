@@ -1,5 +1,5 @@
 {
-  "name": "@ember-decorators/arguments",
+  "name": "@ember-decorators/argument",
   "version": "0.6.2",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [

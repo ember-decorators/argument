@@ -1,4 +1,4 @@
-# @ember-decorators/arguments
+# @ember-decorators/argument
 
 This addon provides a set of decorators that allow you to declaratively specify argument and field
 types and properties, such as mutability. It includes:
@@ -12,7 +12,7 @@ which allow you to specify runtime validations for fields
 
 ```js
 import Component from '@ember/component';
-import { argument, type, immutable } from '@ember-decorators/arguments';
+import { argument, type, immutable } from '@ember-decorators/argument';
 
 export default class ExampleComponent extends Component {
   @argument
@@ -38,7 +38,7 @@ a config option in `ember-cli-build`.
 
 ```js
 import Component from '@ember/component';
-import { argument } from '@ember-decorators/arguments';
+import { argument } from '@ember-decorators/argument';
 
 export default class ExampleComponent extends Component {
   @argument
@@ -96,7 +96,7 @@ proper types, so it is valid for all objects which fulfill the shape (structural
 
 ```js
 import Component from '@ember/component';
-import { type } from '@ember-decorators/arguments';
+import { type } from '@ember-decorators/argument';
 
 export default class ExampleComponent extends Component {
   @type(null, 'string')
@@ -128,7 +128,7 @@ so the value can be provided by a subclass.
 
 ```js
 import Component from '@ember/component';
-import { argument, required } from '@ember-decorators/arguments';
+import { argument, required } from '@ember-decorators/argument';
 
 export default class ExampleComponent extends Component {
   @required
@@ -151,7 +151,7 @@ changed or overridden by subclasses.
 
 ```js
 import EmberObject from '@ember/object';
-import { immutable } from '@ember-decorators/arguments';
+import { immutable } from '@ember-decorators/argument';
 
 class ExampleClass extends EmberObject {
   @immutable
@@ -170,7 +170,7 @@ base class field and decorator babel transforms
 
 ```bash
 ember install ember-decorators
-ember install @ember-decorators/arguments
+ember install @ember-decorators/argument
 ```
 
 ## Running

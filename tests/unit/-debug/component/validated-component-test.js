@@ -7,7 +7,7 @@ import { test } from 'qunit';
 
 import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
 
-import { argument } from '@ember-decorators/arguments';
+import { argument } from '@ember-decorators/argument';
 import { attribute, className } from 'ember-decorators/component';
 
 if (GTE_EMBER_1_13) {

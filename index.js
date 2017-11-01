@@ -11,7 +11,7 @@ function isProductionEnv() {
 }
 
 module.exports = {
-  name: '@ember-decorators/arguments',
+  name: '@ember-decorators/argument',
 
   _getParentOptions() {
     let options;
@@ -56,7 +56,7 @@ module.exports = {
       opts.plugins.push(
         [FilterImports, {
           imports: {
-            '@ember-decorators/arguments/-debug': [
+            '@ember-decorators/argument/-debug': [
               'immutable',
               'required',
               'type',
@@ -93,18 +93,18 @@ module.exports = {
           plugins.push(
             [FilterImports, {
               imports: {
-                '@ember-decorators/arguments/types': [
+                '@ember-decorators/argument/types': [
                   'arrayOf',
                   'shapeOf',
                   'subclassOf',
                   'unionOf'
                 ],
-                '@ember-decorators/arguments': [
+                '@ember-decorators/argument': [
                   'type',
                   'required',
                   'immutable'
                 ],
-                '@ember-decorators/arguments/errors': [
+                '@ember-decorators/argument/errors': [
                   'MutabilityError',
                   'RequiredFieldError',
                   'TypeError'
@@ -117,7 +117,7 @@ module.exports = {
         }
       } else {
         app.project.ui.writeWarnLine(
-          '@ember-decorators/arguments: You are using an unsupported ember-cli-babel version,' +
+          '@ember-decorators/argument: You are using an unsupported ember-cli-babel version,' +
           'decorators will not be stripped automatically'
         );
       }
