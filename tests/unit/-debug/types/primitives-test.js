@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { type } from 'ember-argument-decorators';
+import { type } from '@ember-decorators/argument';
 
 module('@type primitives');
 

@@ -11,7 +11,7 @@ function isProductionEnv() {
 }
 
 module.exports = {
-  name: 'ember-argument-decorators',
+  name: '@ember-decorators/argument',
 
   _getParentOptions() {
     let options;
@@ -56,7 +56,7 @@ module.exports = {
       opts.plugins.push(
         [FilterImports, {
           imports: {
-            'ember-argument-decorators/-debug': [
+            '@ember-decorators/argument/-debug': [
               'immutable',
               'required',
               'type',
@@ -93,18 +93,18 @@ module.exports = {
           plugins.push(
             [FilterImports, {
               imports: {
-                'ember-argument-decorators/types': [
+                '@ember-decorators/argument/types': [
                   'arrayOf',
                   'shapeOf',
                   'subclassOf',
                   'unionOf'
                 ],
-                'ember-argument-decorators': [
+                '@ember-decorators/argument': [
                   'type',
                   'required',
                   'immutable'
                 ],
-                'ember-argument-decorators/errors': [
+                '@ember-decorators/argument/errors': [
                   'MutabilityError',
                   'RequiredFieldError',
                   'TypeError'
@@ -117,8 +117,8 @@ module.exports = {
         }
       } else {
         app.project.ui.writeWarnLine(
-          'ember-legacy-class-transform: You are using an unsupported ember-cli-babel version,' +
-          'legacy class constructor transform will not be included automatically'
+          '@ember-decorators/argument: You are using an unsupported ember-cli-babel version,' +
+          'decorators will not be stripped automatically'
         );
       }
 

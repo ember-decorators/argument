@@ -1,8 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, type } from 'ember-argument-decorators';
-import { arrayOf } from 'ember-argument-decorators/types';
+import { argument, type } from '@ember-decorators/argument';
+import { arrayOf } from '@ember-decorators/argument/types';
 
 module('arrayOf');
 
