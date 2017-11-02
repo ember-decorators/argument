@@ -1,7 +1,7 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument } from '@ember-decorators/argument';
+import { argument, defaultIfUndefined } from '@ember-decorators/argument';
 
 module('@argument');
 
@@ -83,4 +83,18 @@ test('it works with the ES class hierarchy up the prototype chain', function(ass
 
   assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
   assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
+});
+
+test('it works with defaultIfUndefined', function(assert) {
+  class Foo extends EmberObject {
+    @argument
+    @defaultIfUndefined
+    bar = 1;
+  }
+
+  const foo = Foo.create({ bar: undefined });
+  const fooWithValues = Foo.create({ bar: 3 });
+
+  assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
+  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
 });
