@@ -27,6 +27,8 @@ function getInitializersFor(target) {
 let argument = function(target, key, desc, validations) {
   if (DEBUG) {
     validations.isArgument = true;
+
+    // type required needs work, it doesn't work if we use addons that decided not to use @type
     validations.typeRequired = getWithDefault(config, 'emberArgumentDecorators.typeRequired', false);
   }
 
@@ -40,13 +42,19 @@ let argument = function(target, key, desc, validations) {
   initializers[key] = desc.initializer;
 
   desc.initializer = function() {
-    let value;
+    const initializers = getInitializersFor(Object.getPrototypeOf(this));
+    const initializer = initializers[key];
 
-    if(this.hasOwnProperty(key) === true) {
-      value = this[key];
-    } else {
-      const initializers = getInitializersFor(Object.getPrototypeOf(this));
-      value = initializers[key].call(this);
+    let value = this[key];
+
+    if (typeof initializer === 'function') {
+      const initIfUndefined = initializers.__initIfUndefined && initializers.__initIfUndefined[key];
+
+      const shouldInitialize = initIfUndefined ? value === undefined : this.hasOwnProperty(key) === false;
+
+      if (shouldInitialize) {
+        value = initializer.call(this);
+      }
     }
 
     return value;
@@ -57,4 +65,13 @@ if (DEBUG) {
   argument = validationDecorator(argument);
 }
 
-export { argument };
+function defaultIfUndefined(target, key, desc) {
+  const initializers = getOrCreateInitializersFor(target);
+
+  initializers.__initIfUndefined = initializers.__initIfUndefined || {};
+  initializers.__initIfUndefined[key] = true;
+
+  return desc;
+}
+
+export { argument, defaultIfUndefined };
