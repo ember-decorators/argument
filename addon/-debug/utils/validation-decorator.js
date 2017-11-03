@@ -43,6 +43,10 @@ EmberObject.reopenClass({
     const prototype = Object.getPrototypeOf(instance);
     const validations = getValidationsFor(prototype);
 
+    if (!validations) {
+      return instance;
+    }
+
     for (let key in validations) {
       const {
         isImmutable,
