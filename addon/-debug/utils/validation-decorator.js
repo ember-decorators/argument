@@ -95,14 +95,14 @@ EmberObject.reopenClass({
 });
 
 export default function validationDecorator(fn) {
-  return function(target, key, desc) {
+  return function(target, key, desc, options) {
     const validations = getValidationsForKey(target, key);
 
     // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
     desc.writable = true;
     desc.configurable = true;
 
-    fn(target, key, desc, validations);
+    fn(target, key, desc, options, validations);
 
     if (desc.initializer === null) desc.initializer = undefined;
   }

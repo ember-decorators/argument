@@ -8,7 +8,7 @@ export default function type(type) {
 
   const validator = resolveValidator(type);
 
-  return validationDecorator(function(target, key, desc, validations) {
+  return validationDecorator(function(target, key, desc, options, validations) {
     validations.typeValidators.push(validator);
   });
 }
