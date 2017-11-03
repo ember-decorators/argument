@@ -34,7 +34,8 @@ export function resolveValidator(type) {
     return type === null ? primitiveTypeValidators.null : primitiveTypeValidators.undefined;
   } else if (type.isValidator === true) {
     return type;
-  } else if (typeof type === 'function') {
+  } else if (typeof type === 'function' || typeof type === 'object') {
+    // We allow objects for certain classes in IE, like Element, which have typeof 'object' for some reason
     return instanceOf(type);
   } else if (typeof type === 'string') {
     assert(`Unknown primitive type received: ${type}`, primitiveTypeValidators[type] !== undefined);
