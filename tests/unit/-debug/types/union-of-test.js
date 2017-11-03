@@ -1,8 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, type } from '@ember-decorators/argument';
-import { unionOf } from '@ember-decorators/argument/types';
+import { argument } from '@ember-decorators/argument';
+import { type, unionOf } from '@ember-decorators/argument/type';
 
 module('unionOf');
 

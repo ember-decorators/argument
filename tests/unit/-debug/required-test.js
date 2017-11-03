@@ -1,7 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, required } from '@ember-decorators/argument';
+import { argument } from '@ember-decorators/argument';
+import { required } from '@ember-decorators/argument/validation';
 
 module('@required');
 

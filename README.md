@@ -12,7 +12,9 @@ which allow you to specify runtime validations for fields
 
 ```js
 import Component from '@ember/component';
-import { argument, type, immutable } from '@ember-decorators/argument';
+import { argument } from '@ember-decorators/argument';
+import { type } from '@ember-decorators/argument/type';
+import { immutable } from '@ember-decorators/argument/validation';
 
 export default class ExampleComponent extends Component {
   @argument
@@ -96,7 +98,7 @@ proper types, so it is valid for all objects which fulfill the shape (structural
 
 ```js
 import Component from '@ember/component';
-import { type } from '@ember-decorators/argument';
+import { type, arrayOf, unionOf } from '@ember-decorators/argument/type';
 
 export default class ExampleComponent extends Component {
   @type(null, 'string')
@@ -128,7 +130,8 @@ so the value can be provided by a subclass.
 
 ```js
 import Component from '@ember/component';
-import { argument, required } from '@ember-decorators/argument';
+import { argument } from '@ember-decorators/argument';
+import { required } from '@ember-decorators/argument/validation';
 
 export default class ExampleComponent extends Component {
   @required
@@ -151,7 +154,7 @@ changed or overridden by subclasses.
 
 ```js
 import EmberObject from '@ember/object';
-import { immutable } from '@ember-decorators/argument';
+import { immutable } from '@ember-decorators/argument/validation';
 
 class ExampleClass extends EmberObject {
   @immutable

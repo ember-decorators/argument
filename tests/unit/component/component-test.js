@@ -4,8 +4,9 @@ import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent } from 'ember-qunit';
 import { test } from 'qunit';
 
+import { argument } from '@ember-decorators/argument';
+import { type } from '@ember-decorators/argument/type';
 
-import { argument, type } from '@ember-decorators/argument';
 import { find } from 'ember-native-dom-helpers';
 
 moduleForComponent('component', { integration: true });

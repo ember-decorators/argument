@@ -9,8 +9,6 @@ import {
 
 import { validationDecorator } from '@ember-decorators/argument/-debug';
 
-export { immutable, required, type } from '@ember-decorators/argument/-debug';
-
 let internalArgumentDecorator = function(target, key, desc, options, validations) {
   if (DEBUG) {
     validations.isArgument = true;

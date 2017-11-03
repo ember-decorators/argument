@@ -33,7 +33,8 @@ module.exports = {
       exclude: [
         '-debug',
         'errors.js',
-        'types.js'
+        'type.js',
+        'validation.js'
       ]
     });
 
@@ -57,9 +58,6 @@ module.exports = {
         [FilterImports, {
           imports: {
             '@ember-decorators/argument/-debug': [
-              'immutable',
-              'required',
-              'type',
               'validationDecorator'
             ]
           }
@@ -93,21 +91,21 @@ module.exports = {
           plugins.push(
             [FilterImports, {
               imports: {
-                '@ember-decorators/argument/types': [
+                '@ember-decorators/argument/errors': [
+                  'MutabilityError',
+                  'RequiredFieldError',
+                  'TypeError'
+                ],
+                '@ember-decorators/argument/type': [
+                  'type',
                   'arrayOf',
                   'shapeOf',
                   'subclassOf',
                   'unionOf'
                 ],
-                '@ember-decorators/argument': [
-                  'type',
-                  'required',
-                  'immutable'
-                ],
-                '@ember-decorators/argument/errors': [
-                  'MutabilityError',
-                  'RequiredFieldError',
-                  'TypeError'
+                '@ember-decorators/argument/validation': [
+                  'immutable',
+                  'required'
                 ]
               }
             }]

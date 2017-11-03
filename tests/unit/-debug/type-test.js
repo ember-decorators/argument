@@ -1,7 +1,8 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, type } from '@ember-decorators/argument';
+import { argument } from '@ember-decorators/argument';
+import { type } from '@ember-decorators/argument/type';
 
 import config from 'ember-get-config';
 
