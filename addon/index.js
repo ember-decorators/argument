@@ -2,29 +2,16 @@ import { DEBUG } from '@glimmer/env';
 import { getWithDefault } from '@ember/object';
 import config from 'ember-get-config';
 
+import {
+  getInitializersFor,
+  getOrCreateInitializersFor
+} from './-private/initializers-meta';
+
 import { validationDecorator } from '@ember-decorators/argument/-debug';
 
 export { immutable, required, type } from '@ember-decorators/argument/-debug';
 
-const initializersMap = new WeakMap();
-
-function getOrCreateInitializersFor(target) {
-  if (!initializersMap.has(target)) {
-    const parentInitializers = getInitializersFor(Object.getPrototypeOf(target));
-    initializersMap.set(target, Object.create(parentInitializers || null));
-  }
-
-  return initializersMap.get(target);
-}
-
-function getInitializersFor(target) {
-  // Reached the root of the prototype chain
-  if (target === null) return target;
-
-  return initializersMap.get(target) || getInitializersFor(Object.getPrototypeOf(target));
-}
-
-let argument = function(target, key, desc, validations) {
+let internalArgumentDecorator = function(target, key, desc, options, validations) {
   if (DEBUG) {
     validations.isArgument = true;
     validations.typeRequired = getWithDefault(config, 'emberArgumentDecorators.typeRequired', false);
@@ -40,13 +27,17 @@ let argument = function(target, key, desc, validations) {
   initializers[key] = desc.initializer;
 
   desc.initializer = function() {
-    let value;
+    const initializers = getInitializersFor(Object.getPrototypeOf(this));
+    const initializer = initializers[key];
 
-    if(this.hasOwnProperty(key) === true) {
-      value = this[key];
-    } else {
-      const initializers = getInitializersFor(Object.getPrototypeOf(this));
-      value = initializers[key].call(this);
+    let value = this[key];
+
+    if (typeof initializer === 'function') {
+      const shouldInitialize = options.defaultIfUndefined ? value === undefined : this.hasOwnProperty(key) === false;
+
+      if (shouldInitialize) {
+        value = initializer.call(this);
+      }
     }
 
     return value;
@@ -54,7 +45,15 @@ let argument = function(target, key, desc, validations) {
 }
 
 if (DEBUG) {
-  argument = validationDecorator(argument);
+  internalArgumentDecorator = validationDecorator(internalArgumentDecorator);
 }
 
-export { argument };
+export function argument(maybeOptions, maybeKey, maybeDesc) {
+  if (typeof maybeKey === 'string' && typeof maybeDesc === 'object') {
+    return internalArgumentDecorator(maybeOptions, maybeKey, maybeDesc, { defaultIfUndefined: false });
+  }
+
+  return function(target, key, desc) {
+    return internalArgumentDecorator(target, key, desc, maybeOptions);
+  }
+}
