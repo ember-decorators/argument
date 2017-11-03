@@ -30,7 +30,7 @@ class FieldValidations {
 
 export function getValidationsFor(target) {
   // Reached the root of the prototype chain
-  if (target === null) return Object;
+  if (target === null) return;
 
   return validationMetaMap.get(target) || getValidationsFor(Object.getPrototypeOf(target));
 }
