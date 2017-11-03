@@ -1,7 +1,9 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { argument, immutable, type } from '@ember-decorators/argument';
+import { argument } from '@ember-decorators/argument';
+import { type } from '@ember-decorators/argument/type';
+import { immutable } from '@ember-decorators/argument/validation';
 
 module('@immutable');
 
