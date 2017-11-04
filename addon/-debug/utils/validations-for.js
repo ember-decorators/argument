@@ -38,7 +38,7 @@ export function getValidationsFor(target) {
 export function getOrCreateValidationsFor(target) {
   if (!validationMetaMap.has(target)) {
     const parentMeta = getValidationsFor(Object.getPrototypeOf(target));
-    validationMetaMap.set(target, Object.create(parentMeta || Object));
+    validationMetaMap.set(target, Object.create(parentMeta || null));
   }
 
   return validationMetaMap.get(target);
@@ -47,7 +47,7 @@ export function getOrCreateValidationsFor(target) {
 export function getValidationsForKey(target, key) {
   const validations = getOrCreateValidationsFor(target);
 
-  if (!validations.hasOwnProperty(key)) {
+  if (!Object.hasOwnProperty.call(validations, key)) {
     const parentValidations = validations[key];
     validations[key] = new FieldValidations(parentValidations);
   }
