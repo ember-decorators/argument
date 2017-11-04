@@ -47,7 +47,9 @@ EmberObject.reopenClass({
       return instance;
     }
 
-    for (let key in validations) {
+    for (const key in validations) {
+      if (validations[key].constructor.name !== 'FieldValidations') continue;
+
       const {
         isImmutable,
         isRequired,
@@ -59,7 +61,7 @@ EmberObject.reopenClass({
         throw new RequiredFieldError(`${constructor} requires a '${key}' argument to be passed in when using the component`);
       }
 
-      let value = get(instance, key);
+      const value = get(instance, key);
 
       if (typeValidators.length > 0) {
         runValidators(typeValidators, constructor, key, value);
