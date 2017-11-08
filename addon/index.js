@@ -12,7 +12,7 @@ import { validationDecorator } from '@ember-decorators/argument/-debug';
 let internalArgumentDecorator = function(target, key, desc, options, validations) {
   if (DEBUG) {
     validations.isArgument = true;
-    validations.typeRequired = getWithDefault(config, 'emberArgumentDecorators.typeRequired', false);
+    validations.typeRequired = getWithDefault(config, 'emberDecoratorsArgument.typeRequired', false);
   }
 
   // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
