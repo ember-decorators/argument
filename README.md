@@ -176,6 +176,22 @@ ember install ember-decorators
 ember install @ember-decorators/argument
 ```
 
+## Configuration
+
+You can tweak the following settings in your `config/environment.js` under the `emberDecoratorsArgument` namespace:
+
+### `typeRequired`
+
+**Type**: `Boolean` | **Default**: `false`
+
+If enabled, requires you to also specify a [`@type`](#type) for every [`@argument`](#argument).
+
+### `ignoreComponentsWithoutValidations`
+
+**Type**: `Boolean` | **Default**: `false`
+
+If enabled, components that don't have any validations defined on them will not get validated. This is very handy, if you're adding this addon to a pre-existing codebase, since it allows you to progressively migrate your components one by one.
+
 ## Running
 
 * `ember serve`
