@@ -1,5 +1,7 @@
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
+import { getWithDefault } from '@ember/object';
+import config from 'ember-get-config';
 
 import './utils/validation-decorator';
 
@@ -31,6 +33,13 @@ if (GTE_EMBER_1_13) {
 
       const prototype = HAS_MODERN_FACTORY_INJECTIONS ? this.prototype : this.__super__;
       const validations = getValidationsFor(prototype) || {};
+      if (
+        getWithDefault(config, '@ember-decorators/argument.ignoreComponentsWithoutValidations', false) &&
+        Object.keys(validations).length === 0
+      ) {
+        return instance;
+      }
+
       const attributes = (instance.attributeBindings || []);
       const classNames = (instance.classNameBindings || []).map((binding) => binding.split(':')[0]);
 
