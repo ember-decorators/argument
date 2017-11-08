@@ -5,6 +5,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent } from 'ember-qunit';
 import { test } from 'qunit';
 
+import config from 'ember-get-config';
+
 import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
 
 import { argument } from '@ember-decorators/argument';
@@ -107,5 +109,34 @@ if (GTE_EMBER_1_13) {
         tagName="button"
       }}
     `);
+  });
+
+  test('does not assert on undefined args when there are no validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
+    assert.expect(0);
+    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = true;
+
+    class FooComponent extends Component {}
+
+    this.register('component:foo-component', FooComponent);
+
+    this.render(hbs`{{foo-component foo=123}}`);
+
+    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = false;
+  });
+
+  test('asserts on args when there are validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
+    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = true;
+
+    class FooComponent extends Component {
+      @argument foo;
+    }
+
+    this.register('component:foo-component', FooComponent);
+
+    assert.throws(() => {
+      this.render(hbs`{{foo-component bar=123}}`);
+    });
+
+    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = false;
   });
 }
