@@ -113,7 +113,7 @@ if (GTE_EMBER_1_13) {
 
   test('does not assert on undefined args when there are no validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
     assert.expect(0);
-    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = true;
+    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = true;
 
     class FooComponent extends Component {}
 
@@ -121,11 +121,11 @@ if (GTE_EMBER_1_13) {
 
     this.render(hbs`{{foo-component foo=123}}`);
 
-    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = false;
+    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = false;
   });
 
   test('asserts on args when there are validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
-    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = true;
+    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = true;
 
     class FooComponent extends Component {
       @argument foo;
@@ -137,6 +137,6 @@ if (GTE_EMBER_1_13) {
       this.render(hbs`{{foo-component bar=123}}`);
     });
 
-    config.emberDecoratorsArgument.ignoreComponentsWithoutValidations = false;
+    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = false;
   });
 }

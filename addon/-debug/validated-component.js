@@ -34,7 +34,7 @@ if (GTE_EMBER_1_13) {
       const prototype = HAS_MODERN_FACTORY_INJECTIONS ? this.prototype : this.__super__;
       const validations = getValidationsFor(prototype) || {};
       if (
-        getWithDefault(config, 'emberDecoratorsArgument.ignoreComponentsWithoutValidations', false) &&
+        getWithDefault(config, '@ember-decorators/argument.ignoreComponentsWithoutValidations', false) &&
         Object.keys(validations).length === 0
       ) {
         return instance;

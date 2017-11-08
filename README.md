@@ -178,7 +178,7 @@ ember install @ember-decorators/argument
 
 ## Configuration
 
-You can tweak the following settings in your `config/environment.js` under the `emberDecoratorsArgument` namespace:
+You can tweak the following settings in your `config/environment.js` under the `@ember-decorators/argument` namespace:
 
 ### `typeRequired`
 

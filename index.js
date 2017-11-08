@@ -73,7 +73,7 @@ module.exports = {
 
     let parentOptions = this._getParentOptions();
 
-    this.addonOptions = parentOptions.emberDecoratorsArgument || {};
+    this.addonOptions = parentOptions['@ember-decorators/argument'] || {};
 
     this._setupBabelOptions();
 

@@ -6,7 +6,7 @@ import { start } from 'ember-cli-qunit';
 
 import config from 'ember-get-config';
 
-config.emberDecoratorsArgument = {
+config['@ember-decorators/argument'] = {
   typeRequired: false,
   ignoreComponentsWithoutValidations: false
 };

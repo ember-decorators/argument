@@ -187,7 +187,7 @@ test('it requires primitive types or classes', function(assert) {
 });
 
 test('it throws if types are required on an argument', function(assert) {
-  config.emberDecoratorsArgument.typeRequired = true;
+  config['@ember-decorators/argument'].typeRequired = true;
 
   assert.throws(() => {
     // no default
@@ -199,7 +199,7 @@ test('it throws if types are required on an argument', function(assert) {
     Foo.create();
   }, /bar requires a type, add one using the @type decorator/);
 
-  config.emberDecoratorsArgument.typeRequired = false;
+  config['@ember-decorators/argument'].typeRequired = false;
 });
 
 test('subclass can provide value', function(assert) {
