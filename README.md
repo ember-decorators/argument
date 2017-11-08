@@ -186,6 +186,8 @@ You can tweak the following settings in your `config/environment.js` under the `
 
 If enabled, requires you to also specify a [`@type`](#type) for every [`@argument`](#argument).
 
+**Note**: Enabling this option breaks addons that use @ember-decorators/argument, but chose to not specify types for their arguments. See #29 for more information.
+
 ### `ignoreComponentsWithoutValidations`
 
 **Type**: `Boolean` | **Default**: `false`
