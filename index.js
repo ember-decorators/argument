@@ -34,6 +34,7 @@ module.exports = {
         '-debug',
         'errors.js',
         'type.js',
+        'types.js',
         'validation.js'
       ]
     });
@@ -102,6 +103,12 @@ module.exports = {
                   'shapeOf',
                   'subclassOf',
                   'unionOf'
+                ],
+                '@ember-decorators/argument/types': [
+                  'Action',
+                  'ClosureAction',
+                  'Element',
+                  'Node'
                 ],
                 '@ember-decorators/argument/validation': [
                   'immutable',

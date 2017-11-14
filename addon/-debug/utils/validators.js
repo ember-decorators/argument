@@ -6,16 +6,18 @@ function instanceOf(type) {
 }
 
 const primitiveTypeValidators = {
-  action:    makeValidator('action', (value) => typeof value === 'string' || (typeof value === 'function' && !isClass(value))),
   any:       makeValidator('any', () => true),
-  array:     makeValidator('array', (value) => Array.isArray(value)),
-  class:     makeValidator('class', isClass),
+  object:    makeValidator('object', (value) => {
+    return typeof value !== 'boolean'
+      && typeof value !== 'number'
+      && typeof value !== 'string'
+      && typeof value !== 'symbol'
+      && value !== null
+      && value !== undefined;
+  }),
 
   boolean:   makeValidator('boolean', (value) => typeof value === 'boolean'),
-  function:  makeValidator('function', (value) => typeof value === 'function' && !isClass(value)),
-  number:    makeValidator('number', (value) => typeof value === 'number' && !isNaN(value)),
-  NaN:       makeValidator('NaN', (value) => typeof value === 'number' && isNaN(value)),
-  object:    makeValidator('object', (value) => typeof value === 'object' && value !== null && !Array.isArray(value)),
+  number:    makeValidator('number', (value) => typeof value === 'number'),
   string:    makeValidator('string', (value) => typeof value === 'string'),
   symbol:    makeValidator('symbol', (value) => typeof value === 'symbol'),
 

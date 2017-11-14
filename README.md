@@ -65,25 +65,16 @@ Declares that a field must be a specific type. Accepts exactly one type, which m
 string that represents a primitive type, a class that the field is an instance of, or a type created
 using the type helpers.
 
-Primitive types include:
+Primitive types match those of Typescript, including:
 
-* `array`
+* `any`
 * `boolean`
-* `function`
+* `null`
 * `number`
 * `object`
 * `string`
 * `symbol`
-* `null`
 * `undefined`
-* `NaN`
-
-Each of the above maps directly to their respective Javascript primitive types. In addition, there are
-several special primitives:
-
-* `any`: Any type of value
-* `action`: Union type of `string` and `function`. Use this to declare actions that the component sends
-* `class`: Any function that extends from Ember Object (we want to allow this to work with ES Classes in the future, stay tuned!)
 
 You can also pass `null` and `undefined` directly as types for convenience
 
@@ -110,6 +101,12 @@ export default class ExampleComponent extends Component {
   @type(unionOf('string', 'number', Date))
   bar;
 
+  @type(arrayOf('string'))
+  stringArray;
+
+  @type(arrayOf('any'))
+  anyArray;
+
   @type(
     arrayOf(
       unionOf(
@@ -119,9 +116,20 @@ export default class ExampleComponent extends Component {
       )
     )
   )
-  list;
+  unionArray;
 }
 ```
+
+In addition, this library includes several predefined types for convenience:
+
+* `Action` - union type of `string` and `Function`. This is the recommended type to use for actions
+  as it will improve readability and in the future provide metadata for automatic documentation generation
+* `ClosureAction` - Type alias for `Function`. If you want to enforce strict usage of closure actions only
+  this is the recommended type
+* `Element` - Fastboot safe type alias for `window.Element`
+* `Node` - Fastboot safe type alias for `window.Node`
+
+These types can be imported from `@ember-decorators/argument/types`
 
 ### `@required`
 
