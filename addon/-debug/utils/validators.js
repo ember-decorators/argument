@@ -1,5 +1,4 @@
 import { assert } from '@ember/debug';
-import isClass from './is-class';
 
 function instanceOf(type) {
   return makeValidator(type.toString(), (value) => value instanceof type);
