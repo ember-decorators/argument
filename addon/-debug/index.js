@@ -4,7 +4,6 @@ export { default as type } from './decorators/type';
 
 export { default as arrayOf } from './helpers/array-of';
 export { default as shapeOf } from './helpers/shape-of';
-export { default as subclassOf } from './helpers/subclass-of';
 export { default as unionOf } from './helpers/union-of';
 
 export { MutabilityError as MutabilityError } from './errors';

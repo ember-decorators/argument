@@ -85,7 +85,6 @@ Type helpers include:
 * `shapeOf`: Accepts an object of key -> type pairs, and checks the shape of the field to make sure it
 matches the object passed in. The validator only checks to make sure that the fields exist and are their
 proper types, so it is valid for all objects which fulfill the shape (structural typing)
-* `subclassOf`: Checks if the value is an instance of a subclass of the specified type
 
 ```js
 import Component from '@ember/component';

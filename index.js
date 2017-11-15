@@ -101,7 +101,6 @@ module.exports = {
                   'type',
                   'arrayOf',
                   'shapeOf',
-                  'subclassOf',
                   'unionOf'
                 ],
                 '@ember-decorators/argument/types': [
