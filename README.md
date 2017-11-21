@@ -91,10 +91,10 @@ import Component from '@ember/component';
 import { type, arrayOf, unionOf } from '@ember-decorators/argument/type';
 
 export default class ExampleComponent extends Component {
-  @type(null, 'string')
+  @type(unionOf(null, 'string'))
   arg = 'default';
 
-  @type(undefined, Date)
+  @type(unionOf(undefined, Date))
   foo;
 
   @type(unionOf('string', 'number', Date))
