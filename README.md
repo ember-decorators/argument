@@ -85,10 +85,12 @@ Type helpers include:
 * `shapeOf`: Accepts an object of key -> type pairs, and checks the shape of the field to make sure it
 matches the object passed in. The validator only checks to make sure that the fields exist and are their
 proper types, so it is valid for all objects which fulfill the shape (structural typing)
+* `optional`: Produces an optional / nullable type that, in addition to the type that was passed in,
+also allows `null` and `undefined`.
 
 ```js
 import Component from '@ember/component';
-import { type, arrayOf, unionOf } from '@ember-decorators/argument/type';
+import { type, arrayOf, unionOf, optional } from '@ember-decorators/argument/type';
 
 export default class ExampleComponent extends Component {
   @type(unionOf(null, 'string'))
@@ -99,6 +101,12 @@ export default class ExampleComponent extends Component {
 
   @type(unionOf('string', 'number', Date))
   bar;
+
+  @type(optional(Date))
+  optionalDate; // can be either `null`, `undefined` or an instance of ´Date
+
+  @type(unionOf(null, undefined, Date))
+  optionalThroughUnion; // this is virtually identical to `optionalDate`
 
   @type(arrayOf('string'))
   stringArray;
