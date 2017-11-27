@@ -19,8 +19,6 @@ let internalArgumentDecorator = function(target, key, desc, options, validations
   desc.writable = true;
   desc.configurable = true;
 
-  if (desc.initializer === null) return;
-
   const initializers = getOrCreateInitializersFor(target);
   initializers[key] = desc.initializer;
 
