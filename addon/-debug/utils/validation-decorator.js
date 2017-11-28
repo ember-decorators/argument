@@ -36,8 +36,8 @@ function runValidators(validators, constructor, key, value) {
 }
 
 EmberObject.reopenClass({
-  create(props) {
-    const instance = this._super(props);
+  create() {
+    const instance = this._super.apply(this, arguments);
 
     const constructor = this;
     const prototype = Object.getPrototypeOf(instance);
