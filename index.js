@@ -99,6 +99,7 @@ module.exports = {
                 ],
                 '@ember-decorators/argument/type': [
                   'type',
+                  'optional',
                   'arrayOf',
                   'shapeOf',
                   'unionOf'
