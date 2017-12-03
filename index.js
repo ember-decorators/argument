@@ -2,6 +2,7 @@
 'use strict';
 
 const FilterImports = require('babel-plugin-filter-imports');
+const FilterTypesImports = require('./lib/filter-types-imports-transform');
 const ValidatedComponentTransform = require('./lib/validated-component-transform');
 const VersionChecker = require('ember-cli-version-checker');
 const Funnel = require('broccoli-funnel');
@@ -106,16 +107,15 @@ module.exports = {
                 ],
                 '@ember-decorators/argument/types': [
                   'Action',
-                  'ClosureAction',
-                  'Element',
-                  'Node'
+                  'ClosureAction'
                 ],
                 '@ember-decorators/argument/validation': [
                   'immutable',
                   'required'
                 ]
-              }
-            }]
+              },
+            }],
+            FilterTypesImports
           );
         } else if (!this.addonOptions.disableValidatedComponent) {
           plugins.push(ValidatedComponentTransform);
