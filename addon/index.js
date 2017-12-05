@@ -19,7 +19,10 @@ let internalArgumentDecorator = function(target, key, desc, options, validations
   desc.writable = true;
   desc.configurable = true;
 
-  if (desc.initializer === null) return;
+  if (desc.initializer === null || desc.initializer === undefined) {
+    desc.initializer = undefined;
+    return;
+  }
 
   const initializers = getOrCreateInitializersFor(target);
   initializers[key] = desc.initializer;
@@ -30,12 +33,10 @@ let internalArgumentDecorator = function(target, key, desc, options, validations
 
     let value = this[key];
 
-    if (typeof initializer === 'function') {
-      const shouldInitialize = options.defaultIfUndefined ? value === undefined : this.hasOwnProperty(key) === false;
+    const shouldInitialize = options.defaultIfUndefined ? value === undefined : this.hasOwnProperty(key) === false;
 
-      if (shouldInitialize) {
-        value = initializer.call(this);
-      }
+    if (shouldInitialize) {
+      value = initializer.call(this);
     }
 
     return value;
