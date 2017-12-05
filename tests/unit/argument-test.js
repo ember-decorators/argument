@@ -98,3 +98,16 @@ test('it works with defaultIfUndefined', function(assert) {
   assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
   assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
 });
+
+test('it works if no default value was given', function(assert) {
+  class Foo extends EmberObject {
+    @argument
+    bar;
+  }
+
+  const foo = Foo.create();
+  const fooWithValues = Foo.create({ bar: 3 });
+
+  assert.equal(foo.get('bar'), undefined, 'argument default gets set correctly');
+  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+});
