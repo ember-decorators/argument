@@ -41,7 +41,7 @@ module.exports = {
     });
 
 
-    return this._super(filteredTree);
+    return this._super.treeForAddon.call(this, filteredTree);
   },
 
   _setupBabelOptions() {
