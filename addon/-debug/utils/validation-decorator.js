@@ -55,7 +55,7 @@ EmberObject.reopenClass({
         typeRequired
       } = validations[key];
 
-      if (isRequired && !instance.hasOwnProperty(key)) {
+      if (isRequired && instance[key] === undefined && !instance.hasOwnProperty(key)) {
         throw new RequiredFieldError(`${constructor} requires a '${key}' argument to be passed in when using the component`);
       }
 

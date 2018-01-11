@@ -1,6 +1,7 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
+import { computed } from 'ember-decorators/object';
 import { argument } from '@ember-decorators/argument';
 import { required } from '@ember-decorators/argument/validation';
 
@@ -51,6 +52,49 @@ test('required argument can be provided by subclass', function(assert) {
 
   class Bar extends Foo {
     prop = 1;
+  }
+
+  const bar = Bar.create();
+
+  assert.equal(bar.get('prop'), 1);
+});
+
+
+test('required argument can be provided by subclass via getter', function(assert) {
+  assert.expect(1);
+
+  class Foo extends EmberObject {
+    @required
+    @argument
+    prop;
+  }
+
+  class Bar extends Foo {
+    get prop() {
+      return 1;
+    }
+  }
+
+  const bar = Bar.create();
+
+  assert.equal(bar.get('prop'), 1);
+});
+
+
+test('required argument can be provided by subclass via computed', function(assert) {
+  assert.expect(1);
+
+  class Foo extends EmberObject {
+    @required
+    @argument
+    prop;
+  }
+
+  class Bar extends Foo {
+    @computed
+    get prop() {
+      return 1;
+    }
   }
 
   const bar = Bar.create();
