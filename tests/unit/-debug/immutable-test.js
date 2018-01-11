@@ -1,6 +1,7 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
+import { computed } from 'ember-decorators/object';
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
 import { immutable } from '@ember-decorators/argument/validation';
@@ -80,4 +81,50 @@ test('subclass can make field immutable', function(assert) {
   assert.throws(() => {
     bar.set('bar', '123');
   }, /Attempted to set .*#bar to the value 123 but the field is immutable/);
+});
+
+test('immutable value can be provided by computed', function(assert) {
+
+  class Foo extends EmberObject {
+    @immutable
+    prop;
+  }
+
+  class Bar extends Foo {
+    value = 123;
+
+    @computed('value')
+    get prop() {
+      return this.value;
+    }
+  }
+
+  const bar = Bar.create();
+
+  assert.equal(bar.get('prop'), 123, 'default value provided');
+});
+
+test('immutable value cannot be changed by computed', function(assert) {
+
+  class Foo extends EmberObject {
+    @immutable
+    prop;
+  }
+
+  class Bar extends Foo {
+    value = 123;
+
+    @computed('value')
+    get prop() {
+      return this.value;
+    }
+  }
+
+  const bar = Bar.create();
+
+  bar.set('value', 456);
+
+  assert.throws(() => {
+    bar.get('prop');
+  }, /Immutable value Ember.Object#prop changed by underlying computed, original value: 123, new value: 456/);
 });

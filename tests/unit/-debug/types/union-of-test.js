@@ -29,11 +29,11 @@ test('it throws if type does not match', function(assert) {
 
   assert.throws(() => {
     Foo.create({ bar: null });
-  }, /bar expected value of type unionOf\(string,undefined\), but received: null/);
+  }, /bar expected value of type unionOf\(string,undefined\) during 'init', but received: null/);
 
   assert.throws(() => {
     Foo.create({ bar: new Date() });
-  }, /bar expected value of type unionOf\(string,undefined\), but received/);
+  }, /bar expected value of type unionOf\(string,undefined\) during 'init', but received/);
 });
 
 test('it requires primitive types or classes', function(assert) {
