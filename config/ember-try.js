@@ -7,19 +7,16 @@ module.exports = {
       bower: {
         dependencies: {
           'ember': '~1.11.0',
-          'ember-cli-shims': '0.0.6',
-          'ember-data': '~1.13.0'
+          'ember-cli-shims': '0.0.6'
         },
         resolutions: {
           'ember': '~1.11.0',
-          'ember-cli-shims': '0.0.6',
-          'ember-data': '~1.13.0'
+          'ember-cli-shims': '0.0.6'
         }
       },
       npm: {
         devDependencies: {
           'ember-cli-shims': null,
-          'ember-data': '~1.13.0',
           'ember-source': null
         }
       }
@@ -29,19 +26,16 @@ module.exports = {
       bower: {
         dependencies: {
           'ember': '~1.13.0',
-          'ember-cli-shims': '0.0.6',
-          'ember-data': '~1.13.0'
+          'ember-cli-shims': '0.0.6'
         },
         resolutions: {
           'ember': '~1.13.0',
-          'ember-cli-shims': '0.0.6',
-          'ember-data': '~1.13.0'
+          'ember-cli-shims': '0.0.6'
         }
       },
       npm: {
         devDependencies: {
           'ember-cli-shims': null,
-          'ember-data': '~1.13.0',
           'ember-source': null
         }
       }

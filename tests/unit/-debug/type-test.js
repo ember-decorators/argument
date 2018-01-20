@@ -3,6 +3,7 @@ import { addObserver } from '@ember/object/observers';
 import { test, module } from 'qunit';
 
 import { computed } from 'ember-decorators/object';
+import { alias } from 'ember-decorators/object/computed';
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
 
@@ -280,6 +281,44 @@ test('typed value can be provided by computed', function(assert) {
     set prop(value) {
       this.set('value', value);
     }
+  }
+
+  const bar = Bar.create();
+
+  // Works by default
+  assert.equal(bar.get('prop'), 123, 'default value provided');
+
+  // Works when dependent key is set
+  bar.set('value', 456)
+  assert.equal(bar.get('prop'), 456, 'can set dependent key');
+
+  // Works when set directly
+  bar.set('prop', 789);
+  assert.equal(bar.get('value'), 789, 'setter works correctly')
+  assert.equal(bar.get('prop'), 789, 'correct value set');
+
+  // Throws when computed returns incorrect value
+  assert.throws(() => {
+    bar.set('value', 'foo');
+    bar.get('prop');
+  }, /prop expected value of type number during 'get', but received: foo/);
+
+  // Throws when set to incorrect value
+  assert.throws(() => {
+    bar.set('prop', 'foo');
+  }, /prop expected value of type number during 'set', but received: foo/);
+});
+
+test('typed value can be provided by alias', function(assert) {
+  class Foo extends EmberObject {
+    @type('number')
+    prop;
+  }
+
+  class Bar extends Foo {
+    value = 123;
+
+    @alias('value') prop;
   }
 
   const bar = Bar.create();
