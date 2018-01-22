@@ -5,10 +5,7 @@ import config from 'ember-get-config';
 
 import './utils/validation-decorator';
 
-import {
-  GTE_EMBER_1_13,
-  HAS_MODERN_FACTORY_INJECTIONS
-} from 'ember-compatibility-helpers';
+import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
 
 import { getValidationsFor } from './utils/validations-for';
 
@@ -31,7 +28,7 @@ if (GTE_EMBER_1_13) {
       // First create the instance to realize any dynamically added bindings or fields
       const instance = this._super(...arguments);
 
-      const prototype = HAS_MODERN_FACTORY_INJECTIONS ? this.prototype : this.__super__;
+      const prototype = Object.getPrototypeOf(instance);
       const validations = getValidationsFor(prototype) || {};
       if (
         getWithDefault(config, '@ember-decorators/argument.ignoreComponentsWithoutValidations', false) &&
