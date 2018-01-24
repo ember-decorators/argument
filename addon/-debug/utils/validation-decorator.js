@@ -1,10 +1,6 @@
 import EmberObject from '@ember/object';
-import Component from '@ember/component';
-import Controller from '@ember/controller';
-import Service from '@ember/service';
 
 import {
-  makeComputed,
   isMandatorySetter,
   isDescriptor,
   isDescriptorTrap
@@ -13,151 +9,216 @@ import {
 import { getPropertyDescriptor } from './object';
 import { getValidationsFor, getValidationsForKey } from './validations-for';
 
-import { IS_EMBER_2 } from 'ember-compatibility-helpers';
-
 import {
   MutabilityError,
   RequiredFieldError,
   TypeError
 } from '../errors';
 
-function defineWrappedProperty(instance, key, isComputed, isAlias, desc) {
-  let wrappedComputed = makeComputed(desc);
-
-  // Aliases don't cache, instead they proxy directly to another property.
-  // Non-computeds are "volatile" by nature, so we must always recompute.
-  if (!isComputed || isAlias) {
-    wrappedComputed.volatile();
+function guardBind(fn, ...args) {
+  if (typeof fn === 'function') {
+    return fn.bind(...args);
   }
-
-  // Mark the computed as an alias in case it gets consumed by future validated properties
-  wrappedComputed.altKey = isAlias;
-
-  // Explicitly redefine the property to ensure that we will be able to use Ember.defineProperty later
-  Object.defineProperty(instance, key, {
-    configurable: true,
-    writable: true,
-    enumerable: true,
-    value: undefined
-  });
-
-  Ember.defineProperty(instance, key, wrappedComputed);
 }
 
-function runValidators(validators, constructor, key, value, phase) {
+class ValidatedProperty {
+  constructor({ originalValue, klass, keyName, isImmutable, typeValidators }) {
+    this.isDescriptor = true;
+
+    this.klass = klass;
+    this.originalValue = originalValue;
+    this.isImmutable = isImmutable;
+    this.typeValidators = typeValidators;
+
+    runValidators(typeValidators, constructor, keyName, originalValue, 'init');
+  }
+
+  get(obj, keyName) {
+    let {
+      klass,
+      originalValue,
+      isImmutable,
+      typeValidators
+    } = this;
+
+    let newValue = this._get(obj, keyName);
+
+    if (isImmutable && newValue !== originalValue) {
+      throw new MutabilityError(`Immutable value ${klass}#${keyName} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`);
+    }
+
+    if (typeValidators.length > 0) {
+      runValidators(typeValidators, klass, keyName, newValue, 'get');
+    }
+
+    return newValue;
+  }
+
+  set(obj, keyName, value) {
+    let {
+      klass,
+      isImmutable,
+      typeValidators
+    } = this;
+
+    if (isImmutable) {
+      throw new MutabilityError(`Attempted to set ${klass}#${keyName} to the value ${value} but the field is immutable`);
+    }
+
+    if (typeValidators.length > 0) {
+      runValidators(typeValidators, klass, keyName, value, 'set');
+    }
+
+    // Legacy Ember does not return the value from ComputedProperty.set calls,
+    // so we have to side-effect and return the value directly
+    this._set(obj, keyName, value);
+
+    return value;
+  }
+}
+
+class StandardValidatedProperty extends ValidatedProperty {
+  constructor({ originalValue }) {
+    super(...arguments);
+
+    this.cachedValue = originalValue;
+  }
+
+  _get() {
+    return this.cachedValue;
+  }
+
+  _set(obj, keyName, value) {
+    if (value === this.cachedValue) return;
+
+    this.cachedValue = value;
+
+    Ember.propertyDidChange(obj, keyName);
+  }
+}
+
+class NativeComputedValidatedProperty extends ValidatedProperty {
+  constructor({ desc }) {
+    super(...arguments);
+
+    this.desc = desc;
+  }
+
+  _get(obj) {
+    return this.desc.get.call(obj);
+  }
+
+  _set(obj, keyName, value) {
+    let currentValue = this._get(obj, keyName);
+
+    if (value === currentValue) return;
+
+    this.desc.set.call(obj, value);
+
+    Ember.propertyDidChange(obj, keyName);
+  }
+}
+
+class ComputedValidatedProperty extends ValidatedProperty {
+  constructor({ desc }) {
+    super(...arguments);
+
+    this.desc = desc;
+
+    this.setup = guardBind(desc.setup, desc);
+    this.teardown = guardBind(desc.teardown, desc);
+    this.willChange = guardBind(desc.willChange, desc);
+    this.didChange = guardBind(desc.didChange, desc);
+    this.willWatch = guardBind(desc.willWatch, desc);
+    this.didUnwatch = guardBind(desc.didUnwatch, desc);
+  }
+
+  _get(obj, keyName) {
+    return this.desc.get(obj, keyName);
+  }
+
+  _set(obj, keyName, value) {
+    this.desc.set(obj, keyName, value);
+  }
+}
+
+function runValidators(validators, klass, key, value, phase) {
   validators.forEach((validator) => {
     if (validator(value) === false) {
-      throw new TypeError(`${constructor}#${key} expected value of type ${validator} during '${phase}', but received: ${value}`);
+      throw new TypeError(`${klass}#${key} expected value of type ${validator} during '${phase}', but received: ${value}`);
     }
   });
 }
 
-function wrapField(constructor, instance, validations, key) {
+function wrapField(klass, instance, validations, keyName) {
   const {
     isImmutable,
     isRequired,
     typeValidators,
     typeRequired
-  } = validations[key];
+  } = validations[keyName];
 
-  if (isRequired && instance[key] === undefined && !instance.hasOwnProperty(key)) {
-    throw new RequiredFieldError(`${constructor} requires a '${key}' argument to be passed in when using the component`);
+  if (isRequired && instance[keyName] === undefined && !instance.hasOwnProperty(keyName)) {
+    throw new RequiredFieldError(`${klass} requires a '${keyName}' argument to be passed in when using the component`);
   }
 
-  let {
-    get: originalGet,
-    set: originalSet,
-    value: cachedValue
-  } = getPropertyDescriptor(instance, key);
+  // opt out early if no further validations
+  if (!isImmutable && typeValidators.length === 0) {
+    if (typeValidators.length === 0 && typeRequired) {
+      throw new TypeError(`${klass}#${keyName} requires a type, add one using the @type decorator`);
+    }
 
-  let originalValue = instance[key];
+    return;
+  }
 
-  let isComputed = false;
   let meta = Ember.meta(instance);
 
+  let originalValue = instance[keyName];
+
   if (meta.peekDescriptors) {
-    let computedDescriptor = meta.peekDescriptors(key);
-    isComputed = !!computedDescriptor;
+    let possibleDesc = meta.peekDescriptors(keyName);
 
-    cachedValue = isComputed ? computedDescriptor : cachedValue;
-  } else if (isDescriptorTrap(originalValue)) {
-    isComputed = true;
-
-    cachedValue = originalValue.__DESCRIPTOR__;
-  } else {
-    isComputed = isDescriptor(cachedValue);
+    if (possibleDesc !== undefined) {
+      originalValue = possibleDesc;
+    }
   }
 
-  let isAlias = isComputed && !!cachedValue.altKey;
-  let getter, setter;
-
-  if (isComputed) {
-    getter = cachedValue.get.bind(cachedValue, instance, key);
-    setter = cachedValue.set.bind(cachedValue, instance, key);
-  } else if ((typeof originalGet === 'function' || typeof originalSet === 'function') && !isMandatorySetter(originalSet)) {
-    getter = originalGet ? originalGet.bind(instance) : () => { throw new Error('attempted to get a property without a getter') };
-    setter = originalSet ? originalSet.bind(instance) : () => { throw new Error('attempted to set a property without a setter') };
-  } else {
-    // Reset the cached value to get the true initial value of the field
-    cachedValue = originalValue;
-
-    getter = () => cachedValue;
-    setter = (value) => cachedValue = value;
+  if (isDescriptorTrap(originalValue)) {
+    originalValue = originalValue.__DESCRIPTOR__;
   }
 
-  // get the true original value again (finalize any computeds)
-  originalValue = getter();
+  let validatedProperty;
 
-  if (typeValidators.length > 0) {
-    runValidators(typeValidators, constructor, key, originalValue, 'init');
-  } else if (typeRequired) {
-    throw new TypeError(`${constructor}#${key} requires a type, add one using the @type decorator`);
-  }
+  if (isDescriptor(originalValue)) {
+    let desc = originalValue;
 
-  if (isImmutable) {
-    defineWrappedProperty(instance, key, isComputed, isAlias, {
-      get() {
-        let newValue = getter();
+    originalValue = desc.get(instance, keyName);
 
-        if (newValue !== originalValue) {
-          throw new MutabilityError(`Immutable value ${constructor}#${key} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`);
-        }
-
-        return newValue;
-      },
-
-      set(key, value) {
-        throw new MutabilityError(`Attempted to set ${constructor}#${key} to the value ${value} but the field is immutable`);
-      }
+    validatedProperty = new ComputedValidatedProperty({
+      desc, isImmutable, keyName, klass, originalValue, typeValidators
     });
-  } else if (typeValidators.length > 0) {
-    defineWrappedProperty(instance, key, isComputed, isAlias, {
-      get() {
-        let newValue = getter();
+  } else {
+    let desc = getPropertyDescriptor(instance, keyName);
 
-        runValidators(typeValidators, constructor, key, newValue, 'get');
-
-        return newValue;
-      },
-
-      set(key, value) {
-        runValidators(typeValidators, constructor, key, value, 'set');
-
-        // Legacy Ember does not return the value from ComputedProperty.set calls,
-        // so we have to side-effect and return the value directly
-        setter(value);
-
-        // Volatile computeds cannot be watched (they never trigger `propertyDidChange`)
-        // in Ember 2 so we need to trigger it manually in the case where we're proxying
-        // to a simple value/getter/setter
-        if (IS_EMBER_2 && (!isComputed || isAlias)) {
-          Ember.propertyDidChange(instance, key);
-        }
-
-        return value;
-      }
-    });
+    if ((typeof desc.get === 'function' || typeof desc.set === 'function') && !isMandatorySetter(desc.set)) {
+      validatedProperty = new NativeComputedValidatedProperty({
+        desc, isImmutable, keyName, klass, originalValue, typeValidators
+      })
+    } else {
+      validatedProperty = new StandardValidatedProperty({
+        isImmutable, keyName, klass, originalValue, typeValidators
+      })
+    }
   }
+
+  // We're trying to fly under the radar here, so don't use Ember.defineProperty.
+  // Ember should think the property is completely unchanged.
+  Object.defineProperty(instance, keyName, {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value: validatedProperty
+  });
 }
 
 const validatingCreateMixin = {
@@ -181,9 +242,6 @@ const validatingCreateMixin = {
 };
 
 EmberObject.reopenClass(validatingCreateMixin);
-Component.reopenClass(validatingCreateMixin);
-Controller.reopenClass(validatingCreateMixin);
-Service.reopenClass(validatingCreateMixin);
 
 export default function validationDecorator(fn) {
   return function(target, key, desc, options) {
