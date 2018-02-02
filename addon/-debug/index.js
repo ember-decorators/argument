@@ -11,4 +11,4 @@ export { MutabilityError as MutabilityError } from './errors';
 export { RequiredFieldError as RequiredFieldError } from './errors';
 export { TypeError as TypeError } from './errors';
 
-export { default as validationDecorator } from './utils/validation-decorator';
+export { getValidationsForKey as getValidationsForKey } from './utils/validations-for';

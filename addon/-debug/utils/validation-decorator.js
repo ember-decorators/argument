@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import EmberObject from '@ember/object';
 
 import {
@@ -14,6 +15,8 @@ import {
   RequiredFieldError,
   TypeError
 } from '../errors';
+
+import { IS_EMBER_2 } from 'ember-compatibility-helpers';
 
 function guardBind(fn, ...args) {
   if (typeof fn === 'function') {
@@ -65,15 +68,13 @@ class ValidatedProperty {
       throw new MutabilityError(`Attempted to set ${klass}#${keyName} to the value ${value} but the field is immutable`);
     }
 
+    let newValue = this._set(obj, keyName, value);
+
     if (typeValidators.length > 0) {
-      runValidators(typeValidators, klass, keyName, value, 'set');
+      runValidators(typeValidators, klass, keyName, newValue, 'set');
     }
 
-    // Legacy Ember does not return the value from ComputedProperty.set calls,
-    // so we have to side-effect and return the value directly
-    this._set(obj, keyName, value);
-
-    return value;
+    return newValue;
   }
 }
 
@@ -94,6 +95,8 @@ class StandardValidatedProperty extends ValidatedProperty {
     this.cachedValue = value;
 
     Ember.propertyDidChange(obj, keyName);
+
+    return this.cachedValue;
   }
 }
 
@@ -109,13 +112,17 @@ class NativeComputedValidatedProperty extends ValidatedProperty {
   }
 
   _set(obj, keyName, value) {
-    let currentValue = this._get(obj, keyName);
+    // By default Ember.get will check to see if the value has changed before setting
+    // and calling propertyDidChange. In order to not change behavior, we must do the same
+    let currentValue = this._get(obj);
 
-    if (value === currentValue) return;
+    if (value === currentValue) return value;
 
     this.desc.set.call(obj, value);
 
     Ember.propertyDidChange(obj, keyName);
+
+    return this._get(obj);
   }
 }
 
@@ -138,7 +145,15 @@ class ComputedValidatedProperty extends ValidatedProperty {
   }
 
   _set(obj, keyName, value) {
+    if (IS_EMBER_2) {
+      return this.desc.set(obj, keyName, value);
+    }
+
     this.desc.set(obj, keyName, value);
+
+    let { cache } = Ember.meta(obj);
+
+    return typeof cache === 'object' ? cache[keyName] : value;
   }
 }
 
@@ -247,12 +262,16 @@ export default function validationDecorator(fn) {
   return function(target, key, desc, options) {
     const validations = getValidationsForKey(target, key);
 
-    // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
-    desc.writable = true;
-    desc.configurable = true;
-
     fn(target, key, desc, options, validations);
 
-    if (desc.initializer === null) desc.initializer = undefined;
+    if (!desc.get && !desc.set) {
+      // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
+      desc.writable = true;
+      desc.configurable = true;
+    }
+
+    if (desc.initializer === null) {
+      desc.initializer = undefined;
+    }
   }
 }
