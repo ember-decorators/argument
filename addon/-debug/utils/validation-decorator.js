@@ -90,7 +90,7 @@ class StandardValidatedProperty extends ValidatedProperty {
   }
 
   _set(obj, keyName, value) {
-    if (value === this.cachedValue) return;
+    if (value === this.cachedValue) return value;
 
     this.cachedValue = value;
 

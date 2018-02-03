@@ -264,6 +264,24 @@ test('subtypes cannot deviate from superclass type', function(assert) {
   }, /prop expected value of type number during 'init', but received: 123/);
 });
 
+test('typed values can be set to their own value', function(assert) {
+  assert.expect(2);
+
+  class Foo extends EmberObject {
+    @type('number')
+    prop = 123;
+  }
+
+  const foo = Foo.create();
+
+  // Works by default
+  assert.equal(foo.get('prop'), 123, 'default value provided');
+
+  // Works when dependent key is set
+  foo.set('prop', 123);
+  assert.equal(foo.get('prop'), 123, 'no change');
+});
+
 test('typed value can be provided by computed', function(assert) {
   class Foo extends EmberObject {
     @type('number')
@@ -471,7 +489,7 @@ test('native setters can return a different value than given', function(assert) 
   assert.expect(3);
 
   class Foo extends EmberObject {
-    prop = 123;
+    value = 123;
 
     @type('number')
     get prop() {
@@ -533,3 +551,4 @@ test('computed setters can return a different value than given', function(assert
   foo.set('prop', undefined);
   assert.equal(foo.get('prop'), 456, 'can set dependent key');
 });
+
