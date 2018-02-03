@@ -60,7 +60,7 @@ module.exports = {
         [FilterImports, {
           imports: {
             '@ember-decorators/argument/-debug': [
-              'validationDecorator'
+              'getValidationsForKey'
             ]
           }
         }]

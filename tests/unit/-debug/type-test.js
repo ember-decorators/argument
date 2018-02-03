@@ -408,7 +408,7 @@ test('typed value can be watched', function(assert) {
   assert.equal(foo.get('watcher'), 123, 'default value provided');
 
   // Works when dependent key is set
-  foo.set('prop', 456)
+  foo.set('prop', 456);
   assert.equal(foo.get('prop'), 456, 'can set dependent key');
   assert.equal(foo.get('watcher'), 456, 'computed value is updated');
 });
@@ -435,6 +435,101 @@ test('typed value does not trigger mandatory setter', function(assert) {
   assert.equal(foo.get('prop'), 123, 'default value provided');
 
   // Works when dependent key is set
-  foo.set('prop', 456)
+  foo.set('prop', 456);
+  assert.equal(foo.get('prop'), 456, 'can set dependent key');
+});
+
+test('typed native setter does not trigger property notifications if value is unchanged', function(assert) {
+  let value = 0;
+
+  class Foo extends EmberObject {
+    @type('number')
+    get prop() {
+      return 123;
+    }
+
+    set prop(value) {
+      // do nothing
+    }
+
+    @computed('prop')
+    otherProp() {
+      return value++;
+    }
+  }
+
+  const foo = Foo.create();
+
+  assert.equal(foo.get('otherProp'), 0, 'computed is correct before');
+
+  foo.set('prop', 123);
+
+  assert.equal(foo.get('otherProp'), 0, 'computed did not change');
+});
+
+test('native setters can return a different value than given', function(assert) {
+  assert.expect(3);
+
+  class Foo extends EmberObject {
+    prop = 123;
+
+    @type('number')
+    get prop() {
+      return this.value;
+    }
+
+    set prop(value) {
+      if (typeof value === 'number') {
+        this.value = value;
+      }
+    }
+  }
+
+  const foo = Foo.create();
+
+  // Works by default
+  assert.equal(foo.get('prop'), 123, 'default value provided');
+
+  // Works when dependent key is set
+  foo.set('prop', 456);
+  assert.equal(foo.get('prop'), 456, 'can set dependent key');
+
+  // Setter can choose not to set value
+  foo.set('prop', undefined);
+  assert.equal(foo.get('prop'), 456, 'can set dependent key');
+});
+
+test('computed setters can return a different value than given', function(assert) {
+  assert.expect(3);
+
+  class Foo extends EmberObject {
+    value = 123;
+
+    @type('number')
+    @computed('value')
+    get prop() {
+      return this.get('value');
+    }
+
+    set prop(value) {
+      if (typeof value === 'number') {
+        this.set('value', value);
+      }
+
+      return this.get('value');
+    }
+  }
+
+  const foo = Foo.create();
+
+  // Works by default
+  assert.equal(foo.get('prop'), 123, 'default value provided');
+
+  // Works when dependent key is set
+  foo.set('prop', 456);
+  assert.equal(foo.get('prop'), 456, 'can set dependent key');
+
+  // Setter can choose not to set value
+  foo.set('prop', undefined);
   assert.equal(foo.get('prop'), 456, 'can set dependent key');
 });

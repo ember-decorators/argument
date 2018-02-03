@@ -85,7 +85,6 @@ test('it works with the ES class hierarchy up the prototype chain', function(ass
   assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
 });
 
-
 test('it works with defaultIfUndefined', function(assert) {
   class Foo extends EmberObject {
     @argument({ defaultIfUndefined: true })
@@ -97,6 +96,28 @@ test('it works with defaultIfUndefined', function(assert) {
 
   assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
   assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+
+  foo.set('bar', undefined);
+  assert.equal(foo.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
+});
+
+test('it works with defaultIfNullish', function(assert) {
+  class Foo extends EmberObject {
+    @argument({ defaultIfNullish: true })
+    bar = 1;
+  }
+
+  const fooWithUndefined = Foo.create({ bar: undefined });
+  const fooWithNull = Foo.create({ bar: null });
+  const fooWithValues = Foo.create({ bar: 3 });
+
+  assert.equal(fooWithUndefined.get('bar'), 1, 'argument default gets set correctly');
+  assert.equal(fooWithNull.get('bar'), 1, 'argument default gets set correctly');
+  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+
+  fooWithUndefined.set('bar', undefined);
+  fooWithNull.set('bar', undefined);
+  assert.equal(fooWithUndefined.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
 });
 
 test('it works if no default value was given', function(assert) {
