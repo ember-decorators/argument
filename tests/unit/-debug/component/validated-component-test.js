@@ -10,24 +10,37 @@ import config from 'ember-get-config';
 import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
 
 import { argument } from '@ember-decorators/argument';
+import { type } from '@ember-decorators/argument/type';
 import { attribute, className } from 'ember-decorators/component';
 
+let originalTestAdapterException;
+
+moduleForComponent('validate component', {
+  integration: true,
+  beforeEach() {
+      originalTestAdapterException = Ember.Test.adapter.exception;
+      Ember.Test.adapter.exception = function(e) {
+        throw e;
+      };
+  },
+  afterEach() {
+      Ember.Test.adapter.exception = originalTestAdapterException;
+  }
+});
+
+test('asserts on args which are not the correct type', function(assert) {
+  class FooComponent extends Component {
+    @argument @type('string') foo;
+  }
+
+  this.register('component:foo-component', FooComponent);
+
+  assert.throws(() => {
+    this.render(hbs`{{foo-component foo=123}}`);
+  }, /#foo expected value of type string during 'init', but received: 123/);
+});
+
 if (GTE_EMBER_1_13) {
-  let originalTestAdapterException;
-
-  moduleForComponent('validate component', {
-      integration: true,
-      beforeEach() {
-          originalTestAdapterException = Ember.Test.adapter.exception;
-          Ember.Test.adapter.exception = function(e) {
-            throw e;
-          };
-      },
-      afterEach() {
-          Ember.Test.adapter.exception = originalTestAdapterException;
-      }
-   });
-
   test('asserts on args which are not defined', function(assert) {
     class FooComponent extends Component {}
 

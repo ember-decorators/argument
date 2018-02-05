@@ -115,9 +115,10 @@ test('it works with defaultIfNullish', function(assert) {
   assert.equal(fooWithNull.get('bar'), 1, 'argument default gets set correctly');
   assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
 
-  fooWithUndefined.set('bar', undefined);
+  fooWithUndefined.set('bar', null);
   fooWithNull.set('bar', undefined);
-  assert.equal(fooWithUndefined.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
+  assert.equal(fooWithUndefined.get('bar'), 1, 'argument cannot be set to null in repeated usage');
+  assert.equal(fooWithNull.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
 });
 
 test('it works if no default value was given', function(assert) {

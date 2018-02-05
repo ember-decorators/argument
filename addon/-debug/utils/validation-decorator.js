@@ -1,5 +1,10 @@
 import Ember from 'ember';
 import EmberObject from '@ember/object';
+import Mixin from '@ember/object/mixin';
+
+import Component from '@ember/component';
+import Controller from '@ember/controller';
+import Service from '@ember/service';
 
 import {
   isMandatorySetter,
@@ -236,7 +241,7 @@ function wrapField(klass, instance, validations, keyName) {
   });
 }
 
-const validatingCreateMixin = {
+const ValidatingCreateMixin = Mixin.create({
   create() {
     const instance = this._super.apply(this, arguments);
 
@@ -254,9 +259,19 @@ const validatingCreateMixin = {
 
     return instance;
   }
-};
+});
 
-EmberObject.reopenClass(validatingCreateMixin);
+EmberObject.reopenClass(ValidatingCreateMixin);
+
+// Reopening a parent class does not apply the mixin to existing child classes,
+// so we need to apply it directly
+ValidatingCreateMixin.apply(Component);
+ValidatingCreateMixin.apply(Service);
+ValidatingCreateMixin.apply(Controller);
+
+if (window.DS !== undefined && window.DS.Model !== undefined) {
+  ValidatingCreateMixin.apply(window.DS.Model);
+}
 
 export default function validationDecorator(fn) {
   return function(target, key, desc, options) {

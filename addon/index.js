@@ -1,6 +1,7 @@
 import { DEBUG } from '@glimmer/env';
 import { getWithDefault } from '@ember/object';
 import config from 'ember-get-config';
+import makeComputed from './utils/make-computed';
 
 import { getValidationsForKey } from '@ember-decorators/argument/-debug';
 
@@ -42,30 +43,41 @@ let internalArgumentDecorator = function(target, key, desc, options) {
     return values[key];
   };
 
-  let set;
+  if (options.defaultIfNullish === true || options.defaultIfUndefined === true) {
+    let defaultIf;
 
-  if (options.defaultIfNullish === true) {
-    set = function(value) {
-      if (value !== undefined && value !== null) {
-        valuesFor(this)[key] = value;
-      }
+    if (options.defaultIfNullish === true) {
+      defaultIf = (v) => v === undefined || v === null;
+    } else {
+      defaultIf = (v) => v === undefined;
     }
-  } else if (options.defaultIfUndefined === true) {
-    set = function(value) {
-      if (value !== undefined) {
-        valuesFor(this)[key] = value;
+
+    let descriptor = makeComputed({
+      get,
+      set(keyName, value) {
+        if (defaultIf(value)) {
+          return valuesFor(this)[key] = initializer.call(this);
+        } else {
+          return valuesFor(this)[key] = value;
+        }
       }
-    }
+    });
+
+    // Decorators spec doesn't allow us to make a computed directly on
+    // the prototype, so we need to wrap the descriptor in a getter
+    return {
+      get() {
+        return descriptor;
+      }
+    };
   } else {
-    set = function(value) {
-      valuesFor(this)[key] = value;
-    }
+    return {
+      get,
+      set(value) {
+        valuesFor(this)[key] = value;
+      }
+    };
   }
-
-  return {
-    get,
-    set
-  };
 }
 
 export function argument(maybeOptions, maybeKey, maybeDesc) {
