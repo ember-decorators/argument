@@ -30,11 +30,11 @@ test('it throws if type does not match', function(assert) {
 
   assert.throws(() => {
     Foo.create({ bar: 2 });
-  }, /bar expected value of type optional\(string\) during 'init', but received: 2/);
+  }, /Foo#bar expected value of type optional\(string\) during 'init', but received: 2/);
 
   assert.throws(() => {
     Foo.create({ bar: new Date() });
-  }, /bar expected value of type optional\(string\) during 'init', but received/);
+  }, /Foo#bar expected value of type optional\(string\) during 'init', but received/);
 });
 
 test('it requires primitive types or classes', function(assert) {

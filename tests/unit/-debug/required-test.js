@@ -20,7 +20,7 @@ test('it works', function(assert) {
 
   assert.throws(() => {
     Foo.create();
-  }, /requires a 'prop' argument to be passed in when using the component/);
+  }, /Foo#prop is a required value, but was not provided/);
 });
 
 test('it works with subclasses', function(assert) {
@@ -38,7 +38,7 @@ test('it works with subclasses', function(assert) {
 
   assert.throws(() => {
     Bar.create();
-  }, /requires a 'prop' argument to be passed in when using the component/);
+  }, /Bar#prop is a required value, but was not provided/);
 });
 
 test('required argument can be provided by subclass', function(assert) {
@@ -121,5 +121,5 @@ test('subclass can make a field required', function(assert) {
 
   assert.throws(() => {
     Bar.create();
-  }, /requires a 'prop' argument to be passed in when using the component/);
+  }, /Bar#prop is a required value, but was not provided/);
 });

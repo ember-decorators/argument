@@ -36,7 +36,7 @@ function predefinedTypeTest(testType, subtypes) {
       } else {
         assert.throws(() => {
           Foo.create({ foo: primitives[primitive] });
-        }, /foo expected value of type/)
+        }, /Foo#foo expected value of type/)
       }
     }
   });
