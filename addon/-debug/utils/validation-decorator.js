@@ -38,7 +38,7 @@ class ValidatedProperty {
     this.isImmutable = isImmutable;
     this.typeValidators = typeValidators;
 
-    runValidators(typeValidators, constructor, keyName, originalValue, 'init');
+    runValidators(typeValidators, klass, keyName, originalValue, 'init');
   }
 
   get(obj, keyName) {
@@ -52,7 +52,7 @@ class ValidatedProperty {
     let newValue = this._get(obj, keyName);
 
     if (isImmutable && newValue !== originalValue) {
-      throw new MutabilityError(`Immutable value ${klass}#${keyName} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`);
+      throw new MutabilityError(`Immutable value ${klass.name}#${keyName} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`);
     }
 
     if (typeValidators.length > 0) {
@@ -70,7 +70,7 @@ class ValidatedProperty {
     } = this;
 
     if (isImmutable) {
-      throw new MutabilityError(`Attempted to set ${klass}#${keyName} to the value ${value} but the field is immutable`);
+      throw new MutabilityError(`Attempted to set ${klass.name}#${keyName} to the value ${value} but the field is immutable`);
     }
 
     let newValue = this._set(obj, keyName, value);
@@ -165,7 +165,8 @@ class ComputedValidatedProperty extends ValidatedProperty {
 function runValidators(validators, klass, key, value, phase) {
   validators.forEach((validator) => {
     if (validator(value) === false) {
-      throw new TypeError(`${klass}#${key} expected value of type ${validator} during '${phase}', but received: ${value}`);
+      let formattedValue = typeof value === 'string' ? `'${value}'` : value;
+      throw new TypeError(`${klass.name}#${key} expected value of type ${validator} during '${phase}', but received: ${formattedValue}`);
     }
   });
 }
@@ -179,13 +180,13 @@ function wrapField(klass, instance, validations, keyName) {
   } = validations[keyName];
 
   if (isRequired && instance[keyName] === undefined && !instance.hasOwnProperty(keyName)) {
-    throw new RequiredFieldError(`${klass} requires a '${keyName}' argument to be passed in when using the component`);
+    throw new RequiredFieldError(`${klass.name}#${keyName} is a required value, but was not provided. You can provide it as an argument, as a class field, or in the constructor`);
   }
 
   // opt out early if no further validations
   if (!isImmutable && typeValidators.length === 0) {
     if (typeValidators.length === 0 && typeRequired) {
-      throw new TypeError(`${klass}#${keyName} requires a type, add one using the @type decorator`);
+      throw new TypeError(`${klass.name}#${keyName} requires a type, add one using the @type decorator`);
     }
 
     return;
@@ -245,7 +246,7 @@ const ValidatingCreateMixin = Mixin.create({
   create() {
     const instance = this._super.apply(this, arguments);
 
-    const constructor = this;
+    const klass = this;
     const prototype = Object.getPrototypeOf(instance);
     const validations = getValidationsFor(prototype);
 
@@ -254,7 +255,7 @@ const ValidatingCreateMixin = Mixin.create({
     }
 
     for (let key in validations) {
-      wrapField(constructor, instance, validations, key);
+      wrapField(klass, instance, validations, key);
     }
 
     return instance;

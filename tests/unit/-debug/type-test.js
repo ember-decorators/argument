@@ -34,7 +34,7 @@ test('it works with classes', function(assert) {
 
   assert.throws(() => {
     foo.set('bar', 2);
-  }, /bar expected value of type function Date()/)
+  }, /Foo#bar expected value of type function Date()/)
 });
 
 test('it works with a default value', function(assert) {
@@ -58,7 +58,7 @@ test('it throws if an incorrect value is provided', function(assert) {
     }
 
     Foo.create({ bar: 2 });
-  }, /bar expected value of type string during 'init', but received: 2/);
+  }, /Foo#bar expected value of type string during 'init', but received: 2/);
 });
 
 test('it works with the class hierarchy', function(assert) {
@@ -80,11 +80,11 @@ test('it works with the class hierarchy', function(assert) {
 
   assert.throws(() => {
     Quix.create({ prop: 2 });
-  }, /prop expected value of type string during 'init', but received: 2/);
+  }, /Quix#prop expected value of type string during 'init', but received: 2/);
 
   assert.throws(() => {
     Quix.create({ anotherProp: 'val' });
-  }, /anotherProp expected value of type number during 'init', but received: val/);
+  }, /Quix#anotherProp expected value of type number during 'init', but received: 'val'/);
 });
 
 test('it throws if an incorrect default default value is provided', function(assert) {
@@ -97,7 +97,7 @@ test('it throws if an incorrect default default value is provided', function(ass
     }
 
     Foo.create();
-  }, /bar expected value of type string during 'init', but received: undefined/);
+  }, /Foo#bar expected value of type string during 'init', but received: undefined/);
 
   assert.throws(() => {
     // incorrect default
@@ -108,7 +108,7 @@ test('it throws if an incorrect default default value is provided', function(ass
     }
 
     Foo.create();
-  }, /bar expected value of type string during 'init', but received: 2/);
+  }, /Foo#bar expected value of type string during 'init', but received: 2/);
 });
 
 test('throws if the property is set to an incorrect type', function(assert) {
@@ -122,7 +122,7 @@ test('throws if the property is set to an incorrect type', function(assert) {
 
     let foo = Foo.create();
     foo.set('bar', 2);
-  }, /bar expected value of type string during 'set', but received: 2/);
+  }, /Foo#bar expected value of type string during 'set', but received: 2/);
 });
 
 test('it requires exactly one type argument', function(assert) {
@@ -200,7 +200,7 @@ test('it throws if types are required on an argument', function(assert) {
     }
 
     Foo.create();
-  }, /bar requires a type, add one using the @type decorator/);
+  }, /Foo#bar requires a type, add one using the @type decorator/);
 
   config['@ember-decorators/argument'].typeRequired = false;
 });
@@ -242,7 +242,7 @@ test('subtypes can be added to classes', function(assert) {
 
   assert.throws(() => {
     Bar.create({ prop: 123 });
-  }, /prop expected value of type string during 'init', but received: 123/);
+  }, /Bar#prop expected value of type string during 'init', but received: 123/);
 });
 
 test('subtypes cannot deviate from superclass type', function(assert) {
@@ -261,7 +261,7 @@ test('subtypes cannot deviate from superclass type', function(assert) {
 
   assert.throws(() => {
     Bar.create({ prop: '123' });
-  }, /prop expected value of type number during 'init', but received: 123/);
+  }, /Bar#prop expected value of type number during 'init', but received: '123'/);
 });
 
 test('typed values can be set to their own value', function(assert) {
@@ -319,12 +319,12 @@ test('typed value can be provided by computed', function(assert) {
   assert.throws(() => {
     bar.set('value', 'foo');
     bar.get('prop');
-  }, /prop expected value of type number during 'get', but received: foo/);
+  }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
 
   // Throws when set to incorrect value
   assert.throws(() => {
     bar.set('prop', 'foo');
-  }, /prop expected value of type number during 'set', but received: foo/);
+  }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
 });
 
 test('typed value can be provided by alias', function(assert) {
@@ -357,12 +357,12 @@ test('typed value can be provided by alias', function(assert) {
   assert.throws(() => {
     bar.set('value', 'foo');
     bar.get('prop');
-  }, /prop expected value of type number during 'get', but received: foo/);
+  }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
 
   // Throws when set to incorrect value
   assert.throws(() => {
     bar.set('prop', 'foo');
-  }, /prop expected value of type number during 'set', but received: foo/);
+  }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
 });
 
 test('typed value can be provided by native getter/setter', function(assert) {
@@ -401,12 +401,12 @@ test('typed value can be provided by native getter/setter', function(assert) {
   assert.throws(() => {
     bar.value = 'foo';
     bar.get('prop');
-  }, /prop expected value of type number during 'get', but received: foo/);
+  }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
 
   // Throws when set to incorrect value
   assert.throws(() => {
     bar.set('prop', 'foo');
-  }, /prop expected value of type number during 'set', but received: foo/);
+  }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
 });
 
 test('typed value can be watched', function(assert) {

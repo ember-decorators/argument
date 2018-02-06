@@ -19,7 +19,7 @@ test('it works', function(assert) {
 
   assert.throws(() => {
     foo.set('bar', 123);
-  }, /Attempted to set .*#bar to the value 123 but the field is immutable/);
+  }, /Attempted to set Foo#bar to the value 123 but the field is immutable/);
 });
 
 test('it cannot be overridden', function(assert) {
@@ -40,7 +40,7 @@ test('it cannot be overridden', function(assert) {
 
   assert.throws(() => {
     bar.set('bar', '123');
-  }, /Attempted to set .*#bar to the value 123 but the field is immutable/);
+  }, /Attempted to set Bar#bar to the value 123 but the field is immutable/);
 });
 
 test('default value can be overriden', function(assert) {
@@ -60,7 +60,7 @@ test('default value can be overriden', function(assert) {
 
   assert.throws(() => {
     bar.set('bar', '123');
-  }, /Attempted to set .*#bar to the value 123 but the field is immutable/);
+  }, /Attempted to set Bar#bar to the value 123 but the field is immutable/);
 });
 
 test('subclass can make field immutable', function(assert) {
@@ -80,7 +80,7 @@ test('subclass can make field immutable', function(assert) {
 
   assert.throws(() => {
     bar.set('bar', '123');
-  }, /Attempted to set .*#bar to the value 123 but the field is immutable/);
+  }, /Attempted to set Bar#bar to the value 123 but the field is immutable/);
 });
 
 test('immutable value can be provided by computed', function(assert) {
@@ -126,5 +126,5 @@ test('immutable value cannot be changed by computed', function(assert) {
 
   assert.throws(() => {
     bar.get('prop');
-  }, /Immutable value Ember.Object#prop changed by underlying computed, original value: 123, new value: 456/);
+  }, /Immutable value Bar#prop changed by underlying computed, original value: 123, new value: 456/);
 });

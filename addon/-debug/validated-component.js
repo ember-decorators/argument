@@ -48,7 +48,7 @@ if (GTE_EMBER_1_13) {
           || classNames.indexOf(key) !== -1;
 
         assert(
-          `Attempted to assign '${key}' value on a ${this} component, but no argument was defined for that key. Use the @argument helper on the class field to define an argument which can be passed into the component`,
+          `Attempted to assign the argument '${key}' on an instance of ${this.name || this}, but no argument was defined for that key. Use the @argument helper on the class field to define an argument for that class.`,
           isValidArgOrAttr
         );
       }

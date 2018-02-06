@@ -37,7 +37,7 @@ test('asserts on args which are not the correct type', function(assert) {
 
   assert.throws(() => {
     this.render(hbs`{{foo-component foo=123}}`);
-  }, /#foo expected value of type string during 'init', but received: 123/);
+  }, /FooComponent#foo expected value of type string during 'init', but received: 123/);
 });
 
 if (GTE_EMBER_1_13) {
@@ -48,7 +48,7 @@ if (GTE_EMBER_1_13) {
 
     assert.throws(() => {
       this.render(hbs`{{foo-component foo=123}}`);
-    }, /Attempted to assign 'foo'/);
+    }, /Attempted to assign the argument 'foo' on an instance of FooComponent/);
   });
 
   test('does not assert on args which are defined', function(assert) {
