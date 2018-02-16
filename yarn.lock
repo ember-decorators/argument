@@ -2449,9 +2449,9 @@ ember-get-config@^0.2.3:
     broccoli-file-creator "^1.1.1"
     ember-cli-babel "^6.3.0"
 
-ember-legacy-class-shim@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ember-legacy-class-shim/-/ember-legacy-class-shim-1.0.0.tgz#569afce1419d3075e41b324fbf8195f6493e3396"
+ember-legacy-class-shim@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/ember-legacy-class-shim/-/ember-legacy-class-shim-1.0.1.tgz#fc46e2c2595f3f746b2c6a122ed977ff424f103a"
   dependencies:
     ember-cli-version-checker "^2.0.0"
 
