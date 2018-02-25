@@ -23,6 +23,8 @@ import {
 
 import { IS_EMBER_2 } from 'ember-compatibility-helpers';
 
+const notifyPropertyChange = Ember.notifyPropertyChange || Ember.propertyDidChange;
+
 function guardBind(fn, ...args) {
   if (typeof fn === 'function') {
     return fn.bind(...args);
@@ -99,7 +101,7 @@ class StandardValidatedProperty extends ValidatedProperty {
 
     this.cachedValue = value;
 
-    Ember.propertyDidChange(obj, keyName);
+    notifyPropertyChange(obj, keyName);
 
     return this.cachedValue;
   }
@@ -125,7 +127,7 @@ class NativeComputedValidatedProperty extends ValidatedProperty {
 
     this.desc.set.call(obj, value);
 
-    Ember.propertyDidChange(obj, keyName);
+    notifyPropertyChange(obj, keyName);
 
     return this._get(obj);
   }
