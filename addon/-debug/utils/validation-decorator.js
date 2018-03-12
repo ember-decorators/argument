@@ -1,3 +1,4 @@
+/* globals requireModule */
 import Ember from 'ember';
 import EmberObject from '@ember/object';
 import Mixin from '@ember/object/mixin';
@@ -272,8 +273,12 @@ ValidatingCreateMixin.apply(Component);
 ValidatingCreateMixin.apply(Service);
 ValidatingCreateMixin.apply(Controller);
 
-if (window.DS !== undefined && window.DS.Model !== undefined) {
-  ValidatingCreateMixin.apply(window.DS.Model);
+if (requireModule.has('ember-data')) {
+  let DS = requireModule('ember-data').default;
+
+  if (DS.Model) {
+    ValidatingCreateMixin.apply(DS.Model);
+  }
 }
 
 export default function validationDecorator(fn) {

@@ -17,6 +17,7 @@ module.exports = {
       npm: {
         devDependencies: {
           'ember-cli-shims': null,
+          'ember-data': null,
           'ember-source': null
         }
       }
@@ -36,6 +37,7 @@ module.exports = {
       npm: {
         devDependencies: {
           'ember-cli-shims': null,
+          'ember-data': null,
           'ember-source': null
         }
       }
@@ -52,6 +54,7 @@ module.exports = {
       },
       npm: {
         devDependencies: {
+          'ember-data': null,
           'ember-source': null
         }
       }
@@ -68,6 +71,7 @@ module.exports = {
       },
       npm: {
         devDependencies: {
+          'ember-data': null,
           'ember-source': null
         }
       }
@@ -76,6 +80,7 @@ module.exports = {
       name: 'ember-lts-2.12',
       npm: {
         devDependencies: {
+          'ember-data': null,
           'ember-source': '~2.12.0'
         }
       }
