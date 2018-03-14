@@ -22,7 +22,7 @@
     "broccoli-funnel": "^2.0.1",
     "ember-cli-babel": "^6.3.0",
     "ember-cli-version-checker": "^2.0.0",
-    "ember-compatibility-helpers": "^0.1.1",
+    "ember-compatibility-helpers": "^1.0.0-beta.2",
     "ember-get-config": "^0.2.3"
   },
   "devDependencies": {
