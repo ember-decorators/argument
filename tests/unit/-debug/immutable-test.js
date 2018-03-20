@@ -1,7 +1,9 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { computed } from 'ember-decorators/object';
+import { gte } from 'ember-compatibility-helpers';
+
+import { computed } from '@ember-decorators/object';
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
 import { immutable } from '@ember-decorators/argument/validation';
@@ -128,3 +130,21 @@ test('immutable value cannot be changed by computed', function(assert) {
     bar.get('prop');
   }, /Immutable value Bar#prop changed by underlying computed, original value: 123, new value: 456/);
 });
+
+if (gte('3.1.0')) {
+  test('works with native getters', function(assert) {
+    class Foo extends EmberObject {
+      @immutable
+      @argument
+      bar;
+    }
+
+    const foo = Foo.create({ bar: 'baz' });
+
+    assert.equal(foo.bar, 'baz', 'can get value correctly');
+
+    assert.throws(() => {
+      foo.set('bar', 123);
+    }, /Attempted to set Foo#bar to the value 123 but the field is immutable/);
+  });
+}

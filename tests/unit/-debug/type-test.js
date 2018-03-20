@@ -2,10 +2,12 @@ import EmberObject from '@ember/object';
 import { addObserver } from '@ember/object/observers';
 import { test, module } from 'qunit';
 
-import { computed } from 'ember-decorators/object';
-import { alias } from 'ember-decorators/object/computed';
+import { computed } from '@ember-decorators/object';
+import { alias } from '@ember-decorators/object/computed';
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
+
+import { gte } from 'ember-compatibility-helpers';
 
 import config from 'ember-get-config';
 
@@ -471,7 +473,7 @@ test('typed native setter does not trigger property notifications if value is un
     }
 
     @computed('prop')
-    otherProp() {
+    get otherProp() {
       return value++;
     }
   }
@@ -552,3 +554,26 @@ test('computed setters can return a different value than given', function(assert
   assert.equal(foo.get('prop'), 456, 'can set dependent key');
 });
 
+if (gte('3.1.0')) {
+  test('works with native getters', function(assert) {
+    assert.expect(3);
+
+    class Foo extends EmberObject {
+      @type('number')
+      prop = 123;
+    }
+
+    const foo = Foo.create();
+
+    // Works by default
+    assert.equal(foo.prop, 123, 'default value provided');
+
+    // Works when dependent key is set
+    foo.set('prop', 456);
+    assert.equal(foo.prop, 456, 'no change');
+
+    assert.throws(() => {
+      foo.set('prop', 'bar');
+    }, /Foo#prop expected value of type number during 'set', but received: 'bar'/);
+  });
+}

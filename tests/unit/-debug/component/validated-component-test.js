@@ -7,11 +7,11 @@ import { test } from 'qunit';
 
 import config from 'ember-get-config';
 
-import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
+import { gte } from 'ember-compatibility-helpers';
 
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
-import { attribute, className } from 'ember-decorators/component';
+import { attribute, className } from '@ember-decorators/component';
 
 let originalTestAdapterException;
 
@@ -40,7 +40,7 @@ test('asserts on args which are not the correct type', function(assert) {
   }, /FooComponent#foo expected value of type string during 'init', but received: 123/);
 });
 
-if (GTE_EMBER_1_13) {
+if (gte('1.13.0')) {
   test('asserts on args which are not defined', function(assert) {
     class FooComponent extends Component {}
 

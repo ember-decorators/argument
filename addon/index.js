@@ -54,7 +54,7 @@ let internalArgumentDecorator = function(target, key, desc, options) {
       defaultIf = (v) => v === undefined;
     }
 
-    if (gte("3.0.0")) {
+    if (gte('3.1.0')) {
       return {
         get,
         set(value) {

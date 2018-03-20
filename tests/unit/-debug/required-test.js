@@ -1,7 +1,9 @@
 import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
-import { computed } from 'ember-decorators/object';
+import { gte } from 'ember-compatibility-helpers';
+
+import { computed } from '@ember-decorators/object';
 import { argument } from '@ember-decorators/argument';
 import { required } from '@ember-decorators/argument/validation';
 
@@ -123,3 +125,21 @@ test('subclass can make a field required', function(assert) {
     Bar.create();
   }, /Bar#prop is a required value, but was not provided/);
 });
+
+if (gte('3.1.0')) {
+  test('works with native getters', function(assert) {
+    class Foo extends EmberObject {
+      @required
+      @argument
+      prop;
+    }
+
+    let foo = Foo.create({ prop: 123 });
+
+    assert.equal(foo.prop, 123, 'can get value');
+
+    assert.throws(() => {
+      Foo.create();
+    }, /Foo#prop is a required value, but was not provided/);
+  });
+}
