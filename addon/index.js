@@ -3,6 +3,8 @@ import { getWithDefault } from '@ember/object';
 import config from 'ember-get-config';
 import makeComputed from './utils/make-computed';
 
+import { gte } from 'ember-compatibility-helpers';
+
 import { getValidationsForKey } from '@ember-decorators/argument/-debug';
 
 let valueMap = new WeakMap();
@@ -50,6 +52,19 @@ let internalArgumentDecorator = function(target, key, desc, options) {
       defaultIf = (v) => v === undefined || v === null;
     } else {
       defaultIf = (v) => v === undefined;
+    }
+
+    if (gte('3.1.0')) {
+      return {
+        get,
+        set(value) {
+          if (defaultIf(value)) {
+            valuesFor(this)[key] = initializer.call(this);
+          } else {
+            valuesFor(this)[key] = value;
+          }
+        }
+      };
     }
 
     let descriptor = makeComputed({

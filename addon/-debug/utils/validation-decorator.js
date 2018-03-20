@@ -22,7 +22,7 @@ import {
   TypeError
 } from '../errors';
 
-import { IS_EMBER_2 } from 'ember-compatibility-helpers';
+import { gte, IS_EMBER_2 } from 'ember-compatibility-helpers';
 
 const notifyPropertyChange = Ember.notifyPropertyChange || Ember.propertyDidChange;
 
@@ -195,11 +195,11 @@ function wrapField(klass, instance, validations, keyName) {
     return;
   }
 
-  let meta = Ember.meta(instance);
 
   let originalValue = instance[keyName];
+  let meta = Ember.meta(instance);
 
-  if (meta.peekDescriptors) {
+  if (gte('3.1.0')) {
     let possibleDesc = meta.peekDescriptors(keyName);
 
     if (possibleDesc !== undefined) {
@@ -235,14 +235,28 @@ function wrapField(klass, instance, validations, keyName) {
     }
   }
 
-  // We're trying to fly under the radar here, so don't use Ember.defineProperty.
-  // Ember should think the property is completely unchanged.
-  Object.defineProperty(instance, keyName, {
-    configurable: true,
-    enumerable: true,
-    writable: true,
-    value: validatedProperty
-  });
+  if (gte('3.1.0')) {
+    // We're trying to fly under the radar here, so don't use Ember.defineProperty.
+    // Ember should think the property is completely unchanged.
+    Object.defineProperty(instance, keyName, {
+      configurable: true,
+      enumerable: true,
+      get() {
+        return validatedProperty.get(this, keyName);
+      }
+    });
+
+    meta.writeDescriptors(keyName, validatedProperty);
+  } else {
+    // We're trying to fly under the radar here, so don't use Ember.defineProperty.
+    // Ember should think the property is completely unchanged.
+    Object.defineProperty(instance, keyName, {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: validatedProperty
+    });
+  }
 }
 
 const ValidatingCreateMixin = Mixin.create({
