@@ -22,7 +22,7 @@ import {
   TypeError
 } from '../errors';
 
-import { gte, IS_EMBER_2 } from 'ember-compatibility-helpers';
+import { gte } from 'ember-compatibility-helpers';
 
 const notifyPropertyChange = Ember.notifyPropertyChange || Ember.propertyDidChange;
 
@@ -153,7 +153,7 @@ class ComputedValidatedProperty extends ValidatedProperty {
   }
 
   _set(obj, keyName, value) {
-    if (IS_EMBER_2) {
+    if (gte('2.0.0')) {
       return this.desc.set(obj, keyName, value);
     }
 
