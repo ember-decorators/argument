@@ -5,7 +5,7 @@ import config from 'ember-get-config';
 
 import './utils/validation-decorator';
 
-import { GTE_EMBER_1_13 } from 'ember-compatibility-helpers';
+import { gte } from 'ember-compatibility-helpers';
 
 import { getValidationsFor } from './utils/validations-for';
 
@@ -20,7 +20,7 @@ const whitelist = {
   tagName: true
 };
 
-if (GTE_EMBER_1_13) {
+if (gte('1.13.0')) {
   validatedComponent = Component.extend()
 
   validatedComponent.reopenClass({
