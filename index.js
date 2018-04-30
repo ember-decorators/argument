@@ -103,7 +103,8 @@ module.exports = {
                   'optional',
                   'arrayOf',
                   'shapeOf',
-                  'unionOf'
+                  'unionOf',
+                  'oneOf'
                 ],
                 '@ember-decorators/argument/types': [
                   'Action',
