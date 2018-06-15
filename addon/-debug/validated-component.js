@@ -17,7 +17,8 @@ const whitelist = {
   classNames: true,
   id: true,
   isVisible: true,
-  tagName: true
+  tagName: true,
+  __ANGLE_ATTRS__: true
 };
 
 if (gte('1.13.0')) {
