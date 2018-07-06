@@ -199,6 +199,17 @@ You can tweak the following settings in your `config/environment.js` under the `
 
 **Type**: `Boolean` | **Default**: `false`
 
+*For example*
+```
+module.exports = function (environment) {
+  let ENV = {
+    ...
+    '@ember-decorators/argument': {
+      typeRequired: true
+    }
+    ...
+```
+
 If enabled, requires you to also specify a [`@type`](#type) for every [`@argument`](#argument).
 
 **Note**: Enabling this option breaks addons that use @ember-decorators/argument, but chose to not specify types for their arguments. See #29 for more information.
@@ -206,6 +217,17 @@ If enabled, requires you to also specify a [`@type`](#type) for every [`@argumen
 ### `ignoreComponentsWithoutValidations`
 
 **Type**: `Boolean` | **Default**: `false`
+
+*For example*
+```
+module.exports = function (environment) {
+  let ENV = {
+    ...
+    '@ember-decorators/argument': {
+      ignoreComponentsWithoutValidations: true
+    }
+    ...
+```
 
 If enabled, components that don't have any validations defined on them will not get validated. This is very handy, if you're adding this addon to a pre-existing codebase, since it allows you to progressively migrate your components one by one.
 
