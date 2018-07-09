@@ -14,6 +14,6 @@ export default function optional(type) {
   assert(`Passsing 'undefined' to the 'optional' helper does not make sense.`, validatorDesc !== 'undefined');
 
   return makeValidator(`optional(${validator})`, (value) =>
-    validator(value) || nullValidator(value) || undefinedValidator(value)
+    nullValidator(value) || undefinedValidator(value) || validator(value)
   );
 }

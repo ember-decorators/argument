@@ -2,7 +2,7 @@ import EmberObject from '@ember/object';
 import { test, module } from 'qunit';
 
 import { argument } from '@ember-decorators/argument';
-import { type, shapeOf } from '@ember-decorators/argument/type';
+import { type, shapeOf, optional } from '@ember-decorators/argument/type';
 
 module('shapeOf');
 
@@ -16,6 +16,18 @@ test('it works', function(assert) {
   }
 
   Foo.create({ bar: { foo: 'baz' } });
+});
+
+test('it works with optional', function(assert) {
+  assert.expect(0);
+
+  class Foo extends EmberObject {
+    @type(optional(shapeOf({ foo: 'string' })))
+    @argument
+    bar;
+  }
+
+  Foo.create({ bar: null });
 });
 
 test('it throws if array items do not match', function(assert) {
