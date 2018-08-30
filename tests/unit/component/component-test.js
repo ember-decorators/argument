@@ -5,6 +5,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { moduleForComponent } from 'ember-qunit';
 import { test } from 'qunit';
 
+import { gte } from 'ember-compatibility-helpers';
+
 import { argument } from '@ember-decorators/argument';
 import { type } from '@ember-decorators/argument/type';
 
@@ -147,3 +149,18 @@ test('argument defaultIfNullish works with bindings', function(assert) {
 
   assert.deepEqual(vals, [true, 123, true]);
 });
+
+if (gte('3.1.0')) {
+  test('named argument default values ({{@foo}} syntax)', function(assert) {
+    class FooComponent extends Component {
+      @argument foo = 123;
+    }
+
+    this.register('component:foo-component', FooComponent);
+    this.register('template:components/foo-component', hbs`{{@foo}}`);
+
+    this.render(hbs`{{foo-component id="bar"}}`);
+
+    assert.equal(find('#bar').textContent, '123');
+  });
+}
