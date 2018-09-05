@@ -57,7 +57,7 @@ module.exports = {
 
     if (isProductionEnv() && !this.addonOptions.disableCodeStripping) {
       opts.plugins.push(
-        [FilterImports, {
+        [require.resolve('babel-plugin-filter-imports'), {
           imports: {
             '@ember-decorators/argument/-debug': [
               'getValidationsForKey'
@@ -91,7 +91,7 @@ module.exports = {
 
         if (isProductionEnv() && !this.addonOptions.disableCodeStripping) {
           plugins.push(
-            [FilterImports, {
+            [require.resolve('babel-plugin-filter-imports'), {
               imports: {
                 '@ember-decorators/argument/errors': [
                   'MutabilityError',
