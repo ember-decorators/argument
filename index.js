@@ -1,7 +1,6 @@
 /* eslint-env node */
 'use strict';
 
-const FilterImports = require('babel-plugin-filter-imports');
 const FilterTypesImports = require('./lib/filter-types-imports-transform');
 const ValidatedComponentTransform = require('./lib/validated-component-transform');
 const VersionChecker = require('ember-cli-version-checker');
