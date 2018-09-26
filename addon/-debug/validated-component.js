@@ -18,6 +18,7 @@ const whitelist = {
   id: true,
   isVisible: true,
   tagName: true,
+  target: true,
   __ANGLE_ATTRS__: true
 };
 
