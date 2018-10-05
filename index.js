@@ -81,7 +81,7 @@ module.exports = {
     if (!this._registeredWithBabel) {
       let babelChecker = new VersionChecker(this.parent).for('ember-cli-babel', 'npm');
 
-      if (babelChecker.satisfies('^6.0.0-beta.1')) {
+      if (babelChecker.gte('7.0.0')) {
         // Create babel options if they do not exist
         parentOptions.babel = parentOptions.babel || {};
 
