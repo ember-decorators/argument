@@ -19,7 +19,6 @@ import { immutable } from '@ember-decorators/argument/validation';
 export default class ExampleComponent extends Component {
   @argument
   @type('string')
-  @immutable
   arg = 'default';
 }
 ```
@@ -134,49 +133,6 @@ In addition, this library includes several predefined types for convenience:
 - `Node` - Fastboot safe type alias for `window.Node`
 
 These types can be imported from `@ember-decorators/argument/types`
-
-### `@required`
-
-Declares that the field is required upon instantiation. The validator runs at the end of object creation,
-so the value can be provided by a subclass.
-
-```js
-import Component from '@ember/component';
-import { argument } from '@ember-decorators/argument';
-import { required } from '@ember-decorators/argument/validation';
-
-export default class ExampleComponent extends Component {
-  @required
-  @argument
-  arg;
-}
-```
-
-```handlebars
-{{example-component arg="value"}}
-
-<!-- throws an error -->
-{{example-component}}
-```
-
-### `@immutable`
-
-Declares that the field is immutable. Validations begin after the object is created, so the value can be
-changed or overridden by subclasses.
-
-```js
-import EmberObject from '@ember/object';
-import { immutable } from '@ember-decorators/argument/validation';
-
-class ExampleClass extends EmberObject {
-  @immutable
-  field = 'value';
-}
-
-let example = ExampleClasse.create();
-
-example.set('field', 'bar'); // throws an error
-```
 
 ## Installation
 

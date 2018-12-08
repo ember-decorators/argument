@@ -1,5 +1,3 @@
-export { default as immutable } from './decorators/immutable';
-export { default as required } from './decorators/required';
 export { default as type } from './decorators/type';
 
 export { default as arrayOf } from './helpers/array-of';
