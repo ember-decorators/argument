@@ -437,8 +437,8 @@ test('typed value does not trigger mandatory setter', function(assert) {
   assert.expect(3);
 
   class Foo extends EmberObject {
-    constructor() {
-      super();
+    init() {
+      super.init();
 
       addObserver(this, 'prop', () => {
         assert.ok(true, 'observer called');

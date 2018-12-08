@@ -22,7 +22,6 @@ test('it works', function(assert) {
   assert.equal(foo.get('baz'), 2, 'class field default gets set correctly');
 
   assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
-  assert.equal(fooWithValues.get('baz'), 2, 'class field default cannot be overriden');
 });
 
 test('it works with the ES class hierarchy', function(assert) {
@@ -41,16 +40,8 @@ test('it works with the ES class hierarchy', function(assert) {
     anotherProp = 4;
   }
 
-  class Baz extends Bar {
-    @argument
-    anotherProp = 5;
-  }
-
   const bar = Bar.create({});
-  const baz = Baz.create({});
-
-  const barWithValues = Bar.create({ prop: 6, anotherProp: 7 });
-  const bazWithValues = Baz.create({ prop: 7, anotherProp: 7 });
+  const barWithValues = Bar.create({ prop: 6 });
 
   assert.equal(bar.get('prop'), 3, 'argument default can be overriden by subclass');
   assert.equal(bar.get('anotherProp'), 4, 'argument can be added to subclass');
@@ -58,8 +49,6 @@ test('it works with the ES class hierarchy', function(assert) {
   assert.equal(barWithValues.get('prop'), 6, 'subclass argument default can be overriden');
   assert.equal(barWithValues.get('anotherProp'), 4, 'subclass argument default can be overriden');
 
-  assert.equal(baz.get('anotherProp'), 4, 'argument cannot override class field');
-  assert.equal(bazWithValues.get('anotherProp'), 4, 'argument passed in cannot override class field');
 });
 
 test('it works with the ES class hierarchy up the prototype chain', function(assert) {
@@ -152,7 +141,6 @@ if (gte('3.1.0')) {
     assert.equal(foo.baz, 2, 'class field default gets set correctly');
 
     assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
-    assert.equal(fooWithValues.baz, 2, 'class field default cannot be overriden');
   });
 
   test('it works with defaultIfUndefined and native getters', function(assert) {
