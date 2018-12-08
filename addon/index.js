@@ -21,7 +21,11 @@ let internalArgumentDecorator = function(target, key, desc, options) {
   if (DEBUG) {
     let validations = getValidationsForKey(target, key);
     validations.isArgument = true;
-    validations.typeRequired = getWithDefault(config, '@ember-decorators/argument.typeRequired', false);
+    validations.typeRequired = getWithDefault(
+      config,
+      '@ember-decorators/argument.typeRequired',
+      false
+    );
   }
 
   // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
@@ -45,13 +49,16 @@ let internalArgumentDecorator = function(target, key, desc, options) {
     return values[key];
   };
 
-  if (options.defaultIfNullish === true || options.defaultIfUndefined === true) {
+  if (
+    options.defaultIfNullish === true ||
+    options.defaultIfUndefined === true
+  ) {
     let defaultIf;
 
     if (options.defaultIfNullish === true) {
-      defaultIf = (v) => v === undefined || v === null;
+      defaultIf = v => v === undefined || v === null;
     } else {
-      defaultIf = (v) => v === undefined;
+      defaultIf = v => v === undefined;
     }
 
     if (gte('3.1.0')) {
@@ -71,9 +78,9 @@ let internalArgumentDecorator = function(target, key, desc, options) {
       get,
       set(keyName, value) {
         if (defaultIf(value)) {
-          return valuesFor(this)[key] = initializer.call(this);
+          return (valuesFor(this)[key] = initializer.call(this));
         } else {
-          return valuesFor(this)[key] = value;
+          return (valuesFor(this)[key] = value);
         }
       }
     });
@@ -93,14 +100,16 @@ let internalArgumentDecorator = function(target, key, desc, options) {
       }
     };
   }
-}
+};
 
 export function argument(maybeOptions, maybeKey, maybeDesc) {
   if (typeof maybeKey === 'string' && typeof maybeDesc === 'object') {
-    return internalArgumentDecorator(maybeOptions, maybeKey, maybeDesc, { defaultIfUndefined: false });
+    return internalArgumentDecorator(maybeOptions, maybeKey, maybeDesc, {
+      defaultIfUndefined: false
+    });
   }
 
   return function(target, key, desc) {
     return internalArgumentDecorator(target, key, desc, maybeOptions);
-  }
+  };
 }

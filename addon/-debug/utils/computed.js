@@ -3,9 +3,17 @@ export function isMandatorySetter(setter) {
 }
 
 export function isDescriptor(maybeDesc) {
-  return maybeDesc !== null && typeof maybeDesc === 'object' && maybeDesc.isDescriptor;
+  return (
+    maybeDesc !== null &&
+    typeof maybeDesc === 'object' &&
+    maybeDesc.isDescriptor
+  );
 }
 
 export function isDescriptorTrap(maybeDesc) {
-  return maybeDesc !== null && typeof maybeDesc === 'object' && !!maybeDesc.__DESCRIPTOR__;
+  return (
+    maybeDesc !== null &&
+    typeof maybeDesc === 'object' &&
+    !!maybeDesc.__DESCRIPTOR__
+  );
 }

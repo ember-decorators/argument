@@ -1,6 +1,12 @@
 import validationDecorator from '../utils/validation-decorator';
 
-const immutable = validationDecorator(function(target, key, desc, options, validations) {
+const immutable = validationDecorator(function(
+  target,
+  key,
+  desc,
+  options,
+  validations
+) {
   validations.isImmutable = true;
 });
 

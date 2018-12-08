@@ -25,7 +25,6 @@ test('it works', function(assert) {
 });
 
 test('it cannot be overridden', function(assert) {
-
   class Foo extends EmberObject {
     @immutable
     @argument
@@ -86,7 +85,6 @@ test('subclass can make field immutable', function(assert) {
 });
 
 test('immutable value can be provided by computed', function(assert) {
-
   class Foo extends EmberObject {
     @immutable
     prop;
@@ -107,7 +105,6 @@ test('immutable value can be provided by computed', function(assert) {
 });
 
 test('immutable value cannot be changed by computed', function(assert) {
-
   class Foo extends EmberObject {
     @immutable
     prop;

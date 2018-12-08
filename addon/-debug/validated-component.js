@@ -23,7 +23,7 @@ const whitelist = {
 };
 
 if (gte('1.13.0')) {
-  validatedComponent = Component.extend()
+  validatedComponent = Component.extend();
 
   validatedComponent.reopenClass({
     create(props) {
@@ -33,24 +33,32 @@ if (gte('1.13.0')) {
       const prototype = Object.getPrototypeOf(instance);
       const validations = getValidationsFor(prototype) || {};
       if (
-        getWithDefault(config, '@ember-decorators/argument.ignoreComponentsWithoutValidations', false) &&
+        getWithDefault(
+          config,
+          '@ember-decorators/argument.ignoreComponentsWithoutValidations',
+          false
+        ) &&
         Object.keys(validations).length === 0
       ) {
         return instance;
       }
 
-      const attributes = (instance.attributeBindings || []);
-      const classNames = (instance.classNameBindings || []).map((binding) => binding.split(':')[0]);
+      const attributes = instance.attributeBindings || [];
+      const classNames = (instance.classNameBindings || []).map(
+        binding => binding.split(':')[0]
+      );
 
       for (let key in props.attrs) {
         const isValidArgOrAttr =
-          (key in validations && validations[key].isArgument)
-          || key in whitelist
-          || attributes.indexOf(key) !== -1
-          || classNames.indexOf(key) !== -1;
+          (key in validations && validations[key].isArgument) ||
+          key in whitelist ||
+          attributes.indexOf(key) !== -1 ||
+          classNames.indexOf(key) !== -1;
 
         assert(
-          `Attempted to assign the argument '${key}' on an instance of ${this.name || this}, but no argument was defined for that key. Use the @argument helper on the class field to define an argument for that class.`,
+          `Attempted to assign the argument '${key}' on an instance of ${this
+            .name ||
+            this}, but no argument was defined for that key. Use the @argument helper on the class field to define an argument for that class.`,
           isValidArgOrAttr
         );
       }

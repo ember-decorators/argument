@@ -3,7 +3,7 @@ import { test, module } from 'qunit';
 
 module('basic tests');
 
-test('validations do not cause errors on unvalidated objects' , function(assert) {
+test('validations do not cause errors on unvalidated objects', function(assert) {
   class Foo extends EmberObject {}
 
   const foo = Foo.create({ bar: 'baz' });

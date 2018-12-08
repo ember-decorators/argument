@@ -39,7 +39,7 @@ test('it throws if type does not match', function(assert) {
 test('it requires primitive types or classes', function(assert) {
   assert.throws(() => {
     class Foo extends EmberObject {
-      @type(unionOf('string','aoeu'))
+      @type(unionOf('string', 'aoeu'))
       @argument
       bar;
     }

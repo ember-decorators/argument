@@ -61,7 +61,6 @@ test('required argument can be provided by subclass', function(assert) {
   assert.equal(bar.get('prop'), 1);
 });
 
-
 test('required argument can be provided by subclass via getter', function(assert) {
   assert.expect(1);
 
@@ -81,7 +80,6 @@ test('required argument can be provided by subclass via getter', function(assert
 
   assert.equal(bar.get('prop'), 1);
 });
-
 
 test('required argument can be provided by subclass via computed', function(assert) {
   assert.expect(1);

@@ -1,28 +1,30 @@
 import { assert } from '@ember/debug';
 
 function instanceOf(type) {
-  return makeValidator(type.toString(), (value) => value instanceof type);
+  return makeValidator(type.toString(), value => value instanceof type);
 }
 
 const primitiveTypeValidators = {
-  any:       makeValidator('any', () => true),
-  object:    makeValidator('object', (value) => {
-    return typeof value !== 'boolean'
-      && typeof value !== 'number'
-      && typeof value !== 'string'
-      && typeof value !== 'symbol'
-      && value !== null
-      && value !== undefined;
+  any: makeValidator('any', () => true),
+  object: makeValidator('object', value => {
+    return (
+      typeof value !== 'boolean' &&
+      typeof value !== 'number' &&
+      typeof value !== 'string' &&
+      typeof value !== 'symbol' &&
+      value !== null &&
+      value !== undefined
+    );
   }),
 
-  boolean:   makeValidator('boolean', (value) => typeof value === 'boolean'),
-  number:    makeValidator('number', (value) => typeof value === 'number'),
-  string:    makeValidator('string', (value) => typeof value === 'string'),
-  symbol:    makeValidator('symbol', (value) => typeof value === 'symbol'),
+  boolean: makeValidator('boolean', value => typeof value === 'boolean'),
+  number: makeValidator('number', value => typeof value === 'number'),
+  string: makeValidator('string', value => typeof value === 'string'),
+  symbol: makeValidator('symbol', value => typeof value === 'symbol'),
 
-  null:      makeValidator('null', (value) => value === null),
-  undefined: makeValidator('undefined', (value) => value === undefined)
-}
+  null: makeValidator('null', value => value === null),
+  undefined: makeValidator('undefined', value => value === undefined)
+};
 
 export function makeValidator(desc, fn) {
   fn.isValidator = true;
@@ -32,17 +34,25 @@ export function makeValidator(desc, fn) {
 
 export function resolveValidator(type) {
   if (type === null || type === undefined) {
-    return type === null ? primitiveTypeValidators.null : primitiveTypeValidators.undefined;
+    return type === null
+      ? primitiveTypeValidators.null
+      : primitiveTypeValidators.undefined;
   } else if (type.isValidator === true) {
     return type;
   } else if (typeof type === 'function' || typeof type === 'object') {
     // We allow objects for certain classes in IE, like Element, which have typeof 'object' for some reason
     return instanceOf(type);
   } else if (typeof type === 'string') {
-    assert(`Unknown primitive type received: ${type}`, primitiveTypeValidators[type] !== undefined);
+    assert(
+      `Unknown primitive type received: ${type}`,
+      primitiveTypeValidators[type] !== undefined
+    );
 
     return primitiveTypeValidators[type];
   } else {
-    assert(`Types must either be a primitive type string, class, validator, or null or undefined, received: ${type}`, false);
+    assert(
+      `Types must either be a primitive type string, class, validator, or null or undefined, received: ${type}`,
+      false
+    );
   }
 }

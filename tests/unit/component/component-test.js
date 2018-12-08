@@ -45,11 +45,15 @@ test('argument value can be overridden in subclass', function(assert) {
 
   class BarComponent extends Component {
     @type('number')
-    @argument bar = 456;
+    @argument
+    bar = 456;
   }
 
   this.register('component:foo-component', FooComponent);
-  this.register('template:components/foo-component', hbs`{{bar-component bar=foo}}`);
+  this.register(
+    'template:components/foo-component',
+    hbs`{{bar-component bar=foo}}`
+  );
 
   this.register('component:bar-component', BarComponent);
   this.register('template:components/bar-component', hbs`{{bar}}`);
@@ -86,7 +90,11 @@ test('argument works with bindings', function(assert) {
   this.set('bar', 123);
   this.set('bar', 123);
 
-  assert.deepEqual(calls, [false, true, false, true, 123], 'binding updated correctly');
+  assert.deepEqual(
+    calls,
+    [false, true, false, true, 123],
+    'binding updated correctly'
+  );
 });
 
 test('argument defaultIfUndefined works with bindings', function(assert) {

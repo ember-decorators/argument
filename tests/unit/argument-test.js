@@ -21,7 +21,11 @@ test('it works', function(assert) {
   assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
   assert.equal(foo.get('baz'), 2, 'class field default gets set correctly');
 
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+  assert.equal(
+    fooWithValues.get('bar'),
+    3,
+    'argument default can be overriden'
+  );
 });
 
 test('it works with the ES class hierarchy', function(assert) {
@@ -43,12 +47,23 @@ test('it works with the ES class hierarchy', function(assert) {
   const bar = Bar.create({});
   const barWithValues = Bar.create({ prop: 6 });
 
-  assert.equal(bar.get('prop'), 3, 'argument default can be overriden by subclass');
+  assert.equal(
+    bar.get('prop'),
+    3,
+    'argument default can be overriden by subclass'
+  );
   assert.equal(bar.get('anotherProp'), 4, 'argument can be added to subclass');
 
-  assert.equal(barWithValues.get('prop'), 6, 'subclass argument default can be overriden');
-  assert.equal(barWithValues.get('anotherProp'), 4, 'subclass argument default can be overriden');
-
+  assert.equal(
+    barWithValues.get('prop'),
+    6,
+    'subclass argument default can be overriden'
+  );
+  assert.equal(
+    barWithValues.get('anotherProp'),
+    4,
+    'subclass argument default can be overriden'
+  );
 });
 
 test('it works with the ES class hierarchy up the prototype chain', function(assert) {
@@ -72,8 +87,16 @@ test('it works with the ES class hierarchy up the prototype chain', function(ass
   assert.equal(quix.get('prop'), 1, 'argument default is set');
   assert.equal(quix.get('anotherProp'), 2, 'argument default is set');
 
-  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
-  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
+  assert.equal(
+    quixWithValues.get('prop'),
+    7,
+    'subclass argument default can be overriden'
+  );
+  assert.equal(
+    quixWithValues.get('prop'),
+    7,
+    'subclass argument default can be overriden'
+  );
 });
 
 test('it works with defaultIfUndefined', function(assert) {
@@ -86,10 +109,18 @@ test('it works with defaultIfUndefined', function(assert) {
   const fooWithValues = Foo.create({ bar: 3 });
 
   assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+  assert.equal(
+    fooWithValues.get('bar'),
+    3,
+    'argument default can be overriden'
+  );
 
   foo.set('bar', undefined);
-  assert.equal(foo.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
+  assert.equal(
+    foo.get('bar'),
+    1,
+    'argument cannot be set to undefined in repeated usage'
+  );
 });
 
 test('it works with defaultIfNullish', function(assert) {
@@ -102,14 +133,34 @@ test('it works with defaultIfNullish', function(assert) {
   const fooWithNull = Foo.create({ bar: null });
   const fooWithValues = Foo.create({ bar: 3 });
 
-  assert.equal(fooWithUndefined.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithNull.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+  assert.equal(
+    fooWithUndefined.get('bar'),
+    1,
+    'argument default gets set correctly'
+  );
+  assert.equal(
+    fooWithNull.get('bar'),
+    1,
+    'argument default gets set correctly'
+  );
+  assert.equal(
+    fooWithValues.get('bar'),
+    3,
+    'argument default can be overriden'
+  );
 
   fooWithUndefined.set('bar', null);
   fooWithNull.set('bar', undefined);
-  assert.equal(fooWithUndefined.get('bar'), 1, 'argument cannot be set to null in repeated usage');
-  assert.equal(fooWithNull.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
+  assert.equal(
+    fooWithUndefined.get('bar'),
+    1,
+    'argument cannot be set to null in repeated usage'
+  );
+  assert.equal(
+    fooWithNull.get('bar'),
+    1,
+    'argument cannot be set to undefined in repeated usage'
+  );
 });
 
 test('it works if no default value was given', function(assert) {
@@ -121,8 +172,16 @@ test('it works if no default value was given', function(assert) {
   const foo = Foo.create();
   const fooWithValues = Foo.create({ bar: 3 });
 
-  assert.equal(foo.get('bar'), undefined, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
+  assert.equal(
+    foo.get('bar'),
+    undefined,
+    'argument default gets set correctly'
+  );
+  assert.equal(
+    fooWithValues.get('bar'),
+    3,
+    'argument default can be overriden'
+  );
 });
 
 if (gte('3.1.0')) {
@@ -156,7 +215,11 @@ if (gte('3.1.0')) {
     assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
 
     foo.set('bar', undefined);
-    assert.equal(foo.bar, 1, 'argument cannot be set to undefined in repeated usage');
+    assert.equal(
+      foo.bar,
+      1,
+      'argument cannot be set to undefined in repeated usage'
+    );
   });
 
   test('it works with defaultIfNullish and native getters', function(assert) {
@@ -169,13 +232,25 @@ if (gte('3.1.0')) {
     const fooWithNull = Foo.create({ bar: null });
     const fooWithValues = Foo.create({ bar: 3 });
 
-    assert.equal(fooWithUndefined.bar, 1, 'argument default gets set correctly');
+    assert.equal(
+      fooWithUndefined.bar,
+      1,
+      'argument default gets set correctly'
+    );
     assert.equal(fooWithNull.bar, 1, 'argument default gets set correctly');
     assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
 
     fooWithUndefined.set('bar', null);
     fooWithNull.set('bar', undefined);
-    assert.equal(fooWithUndefined.bar, 1, 'argument cannot be set to null in repeated usage');
-    assert.equal(fooWithNull.bar, 1, 'argument cannot be set to undefined in repeated usage');
+    assert.equal(
+      fooWithUndefined.bar,
+      1,
+      'argument cannot be set to null in repeated usage'
+    );
+    assert.equal(
+      fooWithNull.bar,
+      1,
+      'argument cannot be set to undefined in repeated usage'
+    );
   });
 }

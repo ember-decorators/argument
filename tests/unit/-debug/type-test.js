@@ -36,7 +36,7 @@ test('it works with classes', function(assert) {
 
   assert.throws(() => {
     foo.set('bar', 2);
-  }, /Foo#bar expected value of type function Date()/)
+  }, /Foo#bar expected value of type function Date()/);
 });
 
 test('it works with a default value', function(assert) {
@@ -309,12 +309,12 @@ test('typed value can be provided by computed', function(assert) {
   assert.equal(bar.get('prop'), 123, 'default value provided');
 
   // Works when dependent key is set
-  bar.set('value', 456)
+  bar.set('value', 456);
   assert.equal(bar.get('prop'), 456, 'can set dependent key');
 
   // Works when set directly
   bar.set('prop', 789);
-  assert.equal(bar.get('value'), 789, 'setter works correctly')
+  assert.equal(bar.get('value'), 789, 'setter works correctly');
   assert.equal(bar.get('prop'), 789, 'correct value set');
 
   // Throws when computed returns incorrect value
@@ -347,12 +347,12 @@ test('typed value can be provided by alias', function(assert) {
   assert.equal(bar.get('prop'), 123, 'default value provided');
 
   // Works when dependent key is set
-  bar.set('value', 456)
+  bar.set('value', 456);
   assert.equal(bar.get('prop'), 456, 'can set dependent key');
 
   // Works when set directly
   bar.set('prop', 789);
-  assert.equal(bar.get('value'), 789, 'setter works correctly')
+  assert.equal(bar.get('value'), 789, 'setter works correctly');
   assert.equal(bar.get('prop'), 789, 'correct value set');
 
   // Throws when computed returns incorrect value
@@ -396,7 +396,7 @@ test('typed value can be provided by native getter/setter', function(assert) {
 
   // Works when set directly
   bar.set('prop', 789);
-  assert.equal(bar.value, 789, 'setter works correctly')
+  assert.equal(bar.value, 789, 'setter works correctly');
   assert.equal(bar.get('prop'), 789, 'correct value set');
 
   // Throws when computed returns incorrect value

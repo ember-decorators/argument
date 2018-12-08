@@ -18,13 +18,13 @@ let originalTestAdapterException;
 moduleForComponent('validate component', {
   integration: true,
   beforeEach() {
-      originalTestAdapterException = Ember.Test.adapter.exception;
-      Ember.Test.adapter.exception = function(e) {
-        throw e;
-      };
+    originalTestAdapterException = Ember.Test.adapter.exception;
+    Ember.Test.adapter.exception = function(e) {
+      throw e;
+    };
   },
   afterEach() {
-      Ember.Test.adapter.exception = originalTestAdapterException;
+    Ember.Test.adapter.exception = originalTestAdapterException;
   }
 });
 
@@ -95,7 +95,7 @@ if (gte('1.13.0')) {
         super(...arguments);
 
         this.attributeBindings = ['data-test'];
-        this.classNameBindings = ['foo']
+        this.classNameBindings = ['foo'];
       }
     }
 
@@ -107,8 +107,7 @@ if (gte('1.13.0')) {
   test('does not assert on whitelisted arguments and attributes', function(assert) {
     assert.expect(0);
 
-    class FooComponent extends Component {
-    }
+    class FooComponent extends Component {}
 
     this.register('component:foo-component', FooComponent);
 
@@ -126,7 +125,9 @@ if (gte('1.13.0')) {
 
   test('does not assert on undefined args when there are no validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
     assert.expect(0);
-    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = true;
+    config[
+      '@ember-decorators/argument'
+    ].ignoreComponentsWithoutValidations = true;
 
     class FooComponent extends Component {}
 
@@ -134,11 +135,15 @@ if (gte('1.13.0')) {
 
     this.render(hbs`{{foo-component foo=123}}`);
 
-    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = false;
+    config[
+      '@ember-decorators/argument'
+    ].ignoreComponentsWithoutValidations = false;
   });
 
   test('asserts on args when there are validations and `ignoreComponentsWithoutValidations` is enabled', function(assert) {
-    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = true;
+    config[
+      '@ember-decorators/argument'
+    ].ignoreComponentsWithoutValidations = true;
 
     class FooComponent extends Component {
       @argument foo;
@@ -150,6 +155,8 @@ if (gte('1.13.0')) {
       this.render(hbs`{{foo-component bar=123}}`);
     });
 
-    config['@ember-decorators/argument'].ignoreComponentsWithoutValidations = false;
+    config[
+      '@ember-decorators/argument'
+    ].ignoreComponentsWithoutValidations = false;
   });
 }

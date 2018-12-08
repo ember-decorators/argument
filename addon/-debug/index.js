@@ -8,8 +8,8 @@ export { default as unionOf } from './helpers/union-of';
 export { default as optional } from './helpers/optional';
 export { default as oneOf } from './helpers/one-of';
 
-export { MutabilityError as MutabilityError } from './errors';
-export { RequiredFieldError as RequiredFieldError } from './errors';
-export { TypeError as TypeError } from './errors';
+export { MutabilityError } from './errors';
+export { RequiredFieldError } from './errors';
+export { TypeError } from './errors';
 
-export { getValidationsForKey as getValidationsForKey } from './utils/validations-for';
+export { getValidationsForKey } from './utils/validations-for';

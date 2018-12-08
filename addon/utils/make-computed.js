@@ -8,7 +8,7 @@ export default function makeComputed(desc) {
   } else {
     const { get, set } = desc;
 
-    return computed(function (key, value) {
+    return computed(function(key, value) {
       if (arguments.length > 1) {
         return set.call(this, key, value);
       }

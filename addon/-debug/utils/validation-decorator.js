@@ -7,24 +7,17 @@ import Component from '@ember/component';
 import Controller from '@ember/controller';
 import Service from '@ember/service';
 
-import {
-  isMandatorySetter,
-  isDescriptor,
-  isDescriptorTrap
-} from './computed';
+import { isMandatorySetter, isDescriptor, isDescriptorTrap } from './computed';
 
 import { getPropertyDescriptor } from './object';
 import { getValidationsFor, getValidationsForKey } from './validations-for';
 
-import {
-  MutabilityError,
-  RequiredFieldError,
-  TypeError
-} from '../errors';
+import { MutabilityError, RequiredFieldError, TypeError } from '../errors';
 
 import { gte } from 'ember-compatibility-helpers';
 
-const notifyPropertyChange = Ember.notifyPropertyChange || Ember.propertyDidChange;
+const notifyPropertyChange =
+  Ember.notifyPropertyChange || Ember.propertyDidChange;
 
 function guardBind(fn, ...args) {
   if (typeof fn === 'function') {
@@ -45,17 +38,16 @@ class ValidatedProperty {
   }
 
   get(obj, keyName) {
-    let {
-      klass,
-      originalValue,
-      isImmutable,
-      typeValidators
-    } = this;
+    let { klass, originalValue, isImmutable, typeValidators } = this;
 
     let newValue = this._get(obj, keyName);
 
     if (isImmutable && newValue !== originalValue) {
-      throw new MutabilityError(`Immutable value ${klass.name}#${keyName} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`);
+      throw new MutabilityError(
+        `Immutable value ${
+          klass.name
+        }#${keyName} changed by underlying computed, original value: ${originalValue}, new value: ${newValue}`
+      );
     }
 
     if (typeValidators.length > 0) {
@@ -66,14 +58,14 @@ class ValidatedProperty {
   }
 
   set(obj, keyName, value) {
-    let {
-      klass,
-      isImmutable,
-      typeValidators
-    } = this;
+    let { klass, isImmutable, typeValidators } = this;
 
     if (isImmutable) {
-      throw new MutabilityError(`Attempted to set ${klass.name}#${keyName} to the value ${value} but the field is immutable`);
+      throw new MutabilityError(
+        `Attempted to set ${
+          klass.name
+        }#${keyName} to the value ${value} but the field is immutable`
+      );
     }
 
     let newValue = this._set(obj, keyName, value);
@@ -166,35 +158,47 @@ class ComputedValidatedProperty extends ValidatedProperty {
 }
 
 function runValidators(validators, klass, key, value, phase) {
-  validators.forEach((validator) => {
+  validators.forEach(validator => {
     if (validator(value) === false) {
       let formattedValue = typeof value === 'string' ? `'${value}'` : value;
-      throw new TypeError(`${klass.name}#${key} expected value of type ${validator} during '${phase}', but received: ${formattedValue}`);
+      throw new TypeError(
+        `${
+          klass.name
+        }#${key} expected value of type ${validator} during '${phase}', but received: ${formattedValue}`
+      );
     }
   });
 }
 
 function wrapField(klass, instance, validations, keyName) {
-  const {
-    isImmutable,
-    isRequired,
-    typeValidators,
-    typeRequired
-  } = validations[keyName];
+  const { isImmutable, isRequired, typeValidators, typeRequired } = validations[
+    keyName
+  ];
 
-  if (isRequired && instance[keyName] === undefined && !instance.hasOwnProperty(keyName)) {
-    throw new RequiredFieldError(`${klass.name}#${keyName} is a required value, but was not provided. You can provide it as an argument, as a class field, or in the constructor`);
+  if (
+    isRequired &&
+    instance[keyName] === undefined &&
+    !instance.hasOwnProperty(keyName)
+  ) {
+    throw new RequiredFieldError(
+      `${
+        klass.name
+      }#${keyName} is a required value, but was not provided. You can provide it as an argument, as a class field, or in the constructor`
+    );
   }
 
   // opt out early if no further validations
   if (!isImmutable && typeValidators.length === 0) {
     if (typeValidators.length === 0 && typeRequired) {
-      throw new TypeError(`${klass.name}#${keyName} requires a type, add one using the @type decorator`);
+      throw new TypeError(
+        `${
+          klass.name
+        }#${keyName} requires a type, add one using the @type decorator`
+      );
     }
 
     return;
   }
-
 
   let originalValue = instance[keyName];
   let meta = Ember.meta(instance);
@@ -219,19 +223,36 @@ function wrapField(klass, instance, validations, keyName) {
     originalValue = desc.get(instance, keyName);
 
     validatedProperty = new ComputedValidatedProperty({
-      desc, isImmutable, keyName, klass, originalValue, typeValidators
+      desc,
+      isImmutable,
+      keyName,
+      klass,
+      originalValue,
+      typeValidators
     });
   } else {
     let desc = getPropertyDescriptor(instance, keyName);
 
-    if ((typeof desc.get === 'function' || typeof desc.set === 'function') && !isMandatorySetter(desc.set)) {
+    if (
+      (typeof desc.get === 'function' || typeof desc.set === 'function') &&
+      !isMandatorySetter(desc.set)
+    ) {
       validatedProperty = new NativeComputedValidatedProperty({
-        desc, isImmutable, keyName, klass, originalValue, typeValidators
-      })
+        desc,
+        isImmutable,
+        keyName,
+        klass,
+        originalValue,
+        typeValidators
+      });
     } else {
       validatedProperty = new StandardValidatedProperty({
-        isImmutable, keyName, klass, originalValue, typeValidators
-      })
+        isImmutable,
+        keyName,
+        klass,
+        originalValue,
+        typeValidators
+      });
     }
   }
 
@@ -310,5 +331,5 @@ export default function validationDecorator(fn) {
     if (desc.initializer === null) {
       desc.initializer = undefined;
     }
-  }
+  };
 }
