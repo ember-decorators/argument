@@ -1,131 +1,89 @@
-/* eslint-env node */
-const getChannelURL = require('ember-source-channel-url');
+"use strict";
+
+const getChannelURL = require("ember-source-channel-url");
 
 module.exports = function() {
   return Promise.all([
-    getChannelURL('release'),
-    getChannelURL('beta'),
-    getChannelURL('canary'),
-  ]).then((urls) => {
+    getChannelURL("release"),
+    getChannelURL("beta"),
+    getChannelURL("canary")
+  ]).then(urls => {
     return {
-      useYarn: true,
       scenarios: [
         {
-          name: 'ember-1.11',
-          bower: {
-            dependencies: {
-              'ember': '~1.11.0',
-              'ember-cli-shims': '0.0.6'
-            },
-            resolutions: {
-              'ember': '~1.11.0',
-              'ember-cli-shims': '0.0.6'
-            }
+          name: "ember-lts-2.16",
+          env: {
+            EMBER_OPTIONAL_FEATURES: JSON.stringify({
+              "jquery-integration": true
+            })
           },
           npm: {
             devDependencies: {
-              'ember-cli-shims': null,
-              'ember-data': null,
-              'ember-source': null
+              "@ember/jquery": "^0.5.1",
+              "ember-source": "~2.16.0"
             }
           }
         },
         {
-          name: 'ember-1.13',
-          bower: {
-            dependencies: {
-              'ember': '~1.13.0',
-              'ember-cli-shims': '0.0.6'
-            },
-            resolutions: {
-              'ember': '~1.13.0',
-              'ember-cli-shims': '0.0.6'
-            }
+          name: "ember-lts-2.18",
+          env: {
+            EMBER_OPTIONAL_FEATURES: JSON.stringify({
+              "jquery-integration": true
+            })
           },
           npm: {
             devDependencies: {
-              'ember-cli-shims': null,
-              'ember-data': null,
-              'ember-source': null
+              "@ember/jquery": "^0.5.1",
+              "ember-source": "~2.18.0"
             }
           }
         },
         {
-          name: 'ember-lts-2.4',
-          bower: {
-            dependencies: {
-              'ember': 'components/ember#lts-2-4'
-            },
-            resolutions: {
-              'ember': 'lts-2-4'
-            }
-          },
+          name: "ember-release",
           npm: {
             devDependencies: {
-              'ember-data': null,
-              'ember-source': null
+              "ember-source": urls[0]
             }
           }
         },
         {
-          name: 'ember-lts-2.8',
-          bower: {
-            dependencies: {
-              'ember': 'components/ember#lts-2-8'
-            },
-            resolutions: {
-              'ember': 'lts-2-8'
-            }
-          },
+          name: "ember-beta",
           npm: {
             devDependencies: {
-              'ember-data': null,
-              'ember-source': null
+              "ember-source": urls[1]
             }
           }
         },
         {
-          name: 'ember-lts-2.12',
+          name: "ember-canary",
           npm: {
             devDependencies: {
-              'ember-data': null,
-              'ember-source': '~2.12.0'
+              "ember-source": urls[2]
             }
           }
         },
         {
-          name: 'ember-release',
-          npm: {
-            devDependencies: {
-              'ember-source': urls[0]
-            }
-          }
-        },
-        {
-          name: 'ember-beta',
-          npm: {
-            devDependencies: {
-              'ember-source': urls[1]
-            }
-          }
-        },
-        {
-          name: 'ember-canary',
-          npm: {
-            devDependencies: {
-              'ember-source': urls[2]
-            }
-          }
-        },
-        {
-          name: 'ember-default',
+          name: "ember-default",
           npm: {
             devDependencies: {}
           }
         },
         {
-          name: 'ember-default-production',
-          command: 'ember test --environment=production',
+          name: "ember-default-with-jquery",
+          env: {
+            EMBER_OPTIONAL_FEATURES: JSON.stringify({
+              "jquery-integration": true
+            })
+          },
+          npm: {
+            devDependencies: {
+              "@ember/jquery": "^0.5.1"
+            }
+          }
+        },
+        {
+          name: "ember-default-production",
+          command: "ember test --environment=production",
           npm: {
             devDependencies: {}
           }
@@ -133,4 +91,4 @@ module.exports = function() {
       ]
     };
   });
-}
+};

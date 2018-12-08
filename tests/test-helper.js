@@ -1,15 +1,8 @@
-import resolver from './helpers/resolver';
-import {
-  setResolver
-} from 'ember-qunit';
-import { start } from 'ember-cli-qunit';
+import Application from '../app';
+import config from '../config/environment';
+import { setApplication } from '@ember/test-helpers';
+import { start } from 'ember-qunit';
 
-import config from 'ember-get-config';
+setApplication(Application.create(config.APP));
 
-config['@ember-decorators/argument'] = {
-  typeRequired: false,
-  ignoreComponentsWithoutValidations: false
-};
-
-setResolver(resolver);
 start();
