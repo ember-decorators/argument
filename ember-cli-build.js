@@ -9,9 +9,6 @@ function isProductionEnv() {
 
 module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
-    'ember-cli-babel': {
-      throwUnlessParallelizable: true
-    },
     trees: {
       tests: isProductionEnv()
         ? new Funnel('tests', { exclude: ['unit/-debug'] })
