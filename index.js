@@ -9,8 +9,13 @@ function isProductionEnv() {
   return /production/.test(process.env.EMBER_ENV);
 }
 
-function addDefaults(options) {
-  return Object.assign({ disableCodeStripping: false }, options);
+function addDefaults(options = {}) {
+  // Handle the old option, in case people forget to update it
+  if (options.disableCodeStripping) {
+    options.enableCodeStripping = true;
+  }
+
+  return Object.assign({ enableCodeStripping: true }, options);
 }
 
 module.exports = {
@@ -32,7 +37,7 @@ module.exports = {
   },
 
   shouldStripAddon() {
-    return isProductionEnv() && !this.addonOptions.disableCodeStripping;
+    return isProductionEnv() && this.addonOptions.enableCodeStripping;
   },
 
   /**
