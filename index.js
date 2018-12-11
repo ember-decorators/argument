@@ -3,9 +3,14 @@
 
 const Funnel = require('broccoli-funnel');
 const VersionChecker = require('ember-cli-version-checker');
+const log = require('debug')('ember-decorators:argument');
 
 function isProductionEnv() {
   return /production/.test(process.env.EMBER_ENV);
+}
+
+function addDefaults(options) {
+  return Object.assign({ disableCodeStripping: false }, options);
 }
 
 module.exports = {
@@ -74,7 +79,11 @@ module.exports = {
 
     let parentOptions = this._getParentOptions();
 
-    this.addonOptions = parentOptions['@ember-decorators/argument'] || {};
+    this.addonOptions = addDefaults(
+      parentOptions['@ember-decorators/argument']
+    );
+
+    log('Using options %o', this.addonOptions);
 
     if (
       isProductionEnv() &&

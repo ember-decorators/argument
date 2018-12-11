@@ -26,6 +26,7 @@
   "dependencies": {
     "babel-plugin-filter-imports": "^2.0.4",
     "broccoli-funnel": "^2.0.1",
+    "debug": "^4.1.0",
     "ember-cli-babel": "^7.1.4",
     "ember-cli-version-checker": "^2.0.0",
     "ember-native-class-polyfill": "^1.0.4"
