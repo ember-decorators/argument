@@ -1,4 +1,10 @@
-import { unionOf } from '@ember-decorators/argument/-debug';
+import unionOf from './-private/types/union-of';
+
+export { default as arrayOf } from './-private/types/array-of';
+export { default as optional } from './-private/types/optional';
+export { default as oneOf } from './-private/types/one-of';
+export { default as shapeOf } from './-private/types/shape-of';
+export { unionOf };
 
 /**
  * Action type, covers both string actions and closure actions

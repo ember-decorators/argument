@@ -1,10 +1,8 @@
 /* eslint-env node */
 'use strict';
 
-const FilterTypesImports = require('./lib/filter-types-imports-transform');
-const ValidatedComponentTransform = require('./lib/validated-component-transform');
-const VersionChecker = require('ember-cli-version-checker');
 const Funnel = require('broccoli-funnel');
+const VersionChecker = require('ember-cli-version-checker');
 
 function isProductionEnv() {
   return /production/.test(process.env.EMBER_ENV);
@@ -28,47 +26,47 @@ module.exports = {
     return options;
   },
 
+  shouldStripAddon() {
+    return isProductionEnv() && !this.addonOptions.disableCodeStripping;
+  },
+
+  /**
+   * Overwritten to remove implementation in Production builds, if the user does not
+   * disable stripping
+   *
+   * @param {BroccoliNode} tree
+   */
   treeForAddon(tree) {
-    const filteredTree = !(
-      isProductionEnv() && !this.addonOptions.disableCodeStripping
-    )
-      ? tree
-      : new Funnel(tree, {
-          exclude: [
-            '-debug',
-            'errors.js',
-            'type.js',
-            'types.js',
-            'validation.js'
-          ]
-        });
+    const filteredTree = this.shouldStripAddon()
+      ? new Funnel(tree, {
+          exclude: ['-private', 'types', 'errors.js', 'index.js']
+        })
+      : tree;
 
     return this._super.treeForAddon.call(this, filteredTree);
   },
 
-  _setupBabelOptions() {
-    if (this._hasSetupBabelOptions) {
-      return;
-    }
-
-    const opts = (this.options.babel = this.options.babel || {});
-
-    opts.plugins = opts.plugins || [];
-
-    opts.loose = true;
-
-    if (isProductionEnv() && !this.addonOptions.disableCodeStripping) {
-      opts.plugins.push([
-        require.resolve('babel-plugin-filter-imports'),
-        {
-          imports: {
-            '@ember-decorators/argument/-debug': ['getValidationsForKey']
-          }
+  stripImports(babelOptions) {
+    babelOptions.plugins.push([
+      require.resolve('babel-plugin-filter-imports'),
+      {
+        imports: {
+          '@ember-decorators/argument': ['argument'],
+          '@ember-decorators/argument/errors': ['TypeError'],
+          '@ember-decorators/argument/types': [
+            'arrayOf',
+            'optional',
+            'oneOf',
+            'shapeOf',
+            'unionOf',
+            'Action',
+            'ClosureAction',
+            'Element',
+            'Node'
+          ]
         }
-      ]);
-    }
-
-    this._hasSetupBabelOptions = true;
+      }
+    ]);
   },
 
   included(app) {
@@ -78,9 +76,11 @@ module.exports = {
 
     this.addonOptions = parentOptions['@ember-decorators/argument'] || {};
 
-    this._setupBabelOptions();
-
-    if (!this._registeredWithBabel) {
+    if (
+      isProductionEnv() &&
+      !this._registeredWithBabel &&
+      !this.addonOptions.disableCodeStripping
+    ) {
       let babelChecker = new VersionChecker(this.parent).for(
         'ember-cli-babel',
         'npm'
@@ -89,46 +89,9 @@ module.exports = {
       if (babelChecker.gte('7.0.0')) {
         // Create babel options if they do not exist
         parentOptions.babel = parentOptions.babel || {};
+        parentOptions.babel.plugins = parentOptions.babel.plugins || [];
 
-        // Create and pull off babel plugins
-        let plugins = (parentOptions.babel.plugins =
-          parentOptions.babel.plugins || []);
-
-        if (isProductionEnv() && !this.addonOptions.disableCodeStripping) {
-          plugins.push(
-            [
-              require.resolve('babel-plugin-filter-imports'),
-              {
-                imports: {
-                  '@ember-decorators/argument/errors': [
-                    'MutabilityError',
-                    'RequiredFieldError',
-                    'TypeError'
-                  ],
-                  '@ember-decorators/argument/type': [
-                    'type',
-                    'optional',
-                    'arrayOf',
-                    'shapeOf',
-                    'unionOf',
-                    'oneOf'
-                  ],
-                  '@ember-decorators/argument/types': [
-                    'Action',
-                    'ClosureAction'
-                  ],
-                  '@ember-decorators/argument/validation': [
-                    'immutable',
-                    'required'
-                  ]
-                }
-              }
-            ],
-            FilterTypesImports
-          );
-        } else if (!this.addonOptions.disableValidatedComponent) {
-          plugins.push(ValidatedComponentTransform);
-        }
+        this.stripImports(parentOptions.babel);
       } else {
         app.project.ui.writeWarnLine(
           '@ember-decorators/argument: You are using an unsupported ember-cli-babel version,' +
