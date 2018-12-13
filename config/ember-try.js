@@ -9,11 +9,13 @@ module.exports = function() {
     getChannelURL('canary')
   ]).then(urls => {
     return {
+      useYarn: true,
       scenarios: [
         {
           name: 'minimum-ember-version',
           npm: {
             devDependencies: {
+              'ember-native-class-polyfill': '^1.0.4',
               'ember-source': '3.4.6'
             }
           }

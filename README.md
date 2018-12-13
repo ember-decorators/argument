@@ -124,6 +124,12 @@ module.exports = function(defaults) {
 };
 ```
 
+## Ember Compatibility
+
+This addon works out-of-the-box with Ember `3.6` and higher. This is due to a dependency on the [changes to the native class constructor behavior][native-class-constructor-update] that landed in that Ember version.
+
+Support can be polyfilled using [`ember-native-class-polyfill`][ember-native-class-polyfill] back to any version that it supports. Currently, that is Ember `3.4`.
+
 ## Running
 
 - `ember serve`
@@ -140,3 +146,6 @@ module.exports = function(defaults) {
 - `ember build`
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+
+[native-class-constructor-update]: https://github.com/emberjs/rfcs/blob/master/text/0337-native-class-constructor-update.md
+[ember-native-class-polyfill]: https://www.npmjs.com/package/ember-native-class-polyfill
