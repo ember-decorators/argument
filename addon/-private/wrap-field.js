@@ -7,7 +7,7 @@ import {
 } from './utils/computed';
 import { getPropertyDescriptor } from './utils/object';
 
-import { TypeError } from '../errors';
+import { TypeError } from './errors';
 
 const notifyPropertyChange =
   Ember.notifyPropertyChange || Ember.propertyDidChange;

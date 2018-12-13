@@ -49,7 +49,7 @@ module.exports = {
   treeForAddon(tree) {
     const filteredTree = this.shouldStripAddon()
       ? new Funnel(tree, {
-          exclude: ['-private', 'types', 'errors.js', 'index.js']
+          exclude: ['-private', 'types', 'index.js']
         })
       : tree;
 
@@ -62,7 +62,6 @@ module.exports = {
       {
         imports: {
           '@ember-decorators/argument': ['argument'],
-          '@ember-decorators/argument/errors': ['TypeError'],
           '@ember-decorators/argument/types': [
             'arrayOf',
             'optional',
