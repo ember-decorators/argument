@@ -1,5 +1,8 @@
 # @ember-decorators/argument
 
+[![Build Status](https://travis-ci.org/ember-decorators/argument.svg?branch=master)](https://travis-ci.org/ember-decorators/argument)
+![Ember Version Badge](https://badgen.net/badge/ember/v3.6.0+/orange)
+
 This addon provides a decorator that allows you to declaratively specify component arguments. Through it, you can have run-time type checking of component usage.
 
 ## Usage
