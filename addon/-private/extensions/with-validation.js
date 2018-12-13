@@ -18,6 +18,10 @@ export function withExtension(klass) {
   klass[HAS_VALIDATION] = true;
 
   return class extends klass {
+    static get name() {
+      return klass.name;
+    }
+
     init(...args) {
       super.init(...args);
 

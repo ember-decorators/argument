@@ -27,6 +27,10 @@ export function hasExtension(klass) {
 
 export function withExtension(klass) {
   return class extends klass {
+    static get name() {
+      return klass.name;
+    }
+
     init(...args) {
       super.init(...args);
 
