@@ -49,7 +49,7 @@ module.exports = {
   treeForAddon(tree) {
     const filteredTree = this.shouldStripAddon()
       ? new Funnel(tree, {
-          exclude: ['-private', 'types', 'index.js']
+          exclude: ['-private', 'types.js', 'index.js']
         })
       : tree;
 

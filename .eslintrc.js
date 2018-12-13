@@ -52,6 +52,13 @@ module.exports = {
           // add your custom rules and overrides for node files here
         }
       )
+    },
+    {
+      // Node tests
+      files: ['node-tests/**/*.js'],
+      env: {
+        node: true
+      }
     }
   ]
 };

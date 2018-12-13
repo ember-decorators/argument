@@ -21,7 +21,8 @@
     "lint:js": "eslint .",
     "start": "ember serve",
     "test": "ember test",
-    "test:all": "ember try:each"
+    "test:all": "ember try:each",
+    "test:node": "ember build -prod && ava node-tests"
   },
   "dependencies": {
     "babel-plugin-filter-imports": "^2.0.4",
@@ -34,8 +35,8 @@
   "devDependencies": {
     "@ember-decorators/babel-transforms": "^3.1.0",
     "@ember/optional-features": "^0.6.3",
+    "ava": "^0.25.0",
     "babel-eslint": "^8.0.0",
-    "broccoli-asset-rev": "^2.7.0",
     "ember-cli": "~3.5.1",
     "ember-cli-dependency-checker": "^3.0.0",
     "ember-cli-htmlbars": "^3.0.0",
