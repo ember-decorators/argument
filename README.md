@@ -82,8 +82,8 @@ export default class ExampleComponent extends Component {
 
 In addition, this library includes several predefined types for convenience:
 
-- `Action` - union type of `string` and `Function`. This is the recommended type to use for actions as it will improve readability and in the future provide metadata for automatic documentation generation
-- `ClosureAction` - Type alias for `Function`. If you want to enforce strict usage of closure actions only this is the recommended type
+- `Action` - Type alias for `Function`, to be used when passing a ["closure action"][closure-action] into a component
+- `ClassicAction` - Union of `string` and `Function`, to be used if your component uses `sendAction` to invoke a "classic action"
 - `Element` - Fastboot safe type alias for `window.Element`
 - `Node` - Fastboot safe type alias for `window.Node`
 
@@ -150,3 +150,4 @@ For more information on using ember-cli, visit [https://ember-cli.com/](https://
 
 [native-class-constructor-update]: https://github.com/emberjs/rfcs/blob/master/text/0337-native-class-constructor-update.md
 [ember-native-class-polyfill]: https://www.npmjs.com/package/ember-native-class-polyfill
+[closure-action]: https://alexdiliberto.com/posts/ember-closure-actions/

@@ -7,7 +7,7 @@ import {
   shapeOf,
   unionOf,
   Action,
-  ClosureAction,
+  ClassicAction,
   Element,
   Node
 } from '@ember-decorators/argument/types';
@@ -23,7 +23,7 @@ export default class KitchenSinkComponent extends Component {
   @argument(arrayOf(unionOf(Element, Node)))
   someElements;
 
-  @argument(oneOf(Action, ClosureAction))
+  @argument(oneOf(Action, ClassicAction))
   SVGComponentTransferFunctionElement;
 
   @argument(optional('number'))

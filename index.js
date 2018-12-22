@@ -69,7 +69,7 @@ module.exports = {
             'shapeOf',
             'unionOf',
             'Action',
-            'ClosureAction',
+            'ClassicAction',
             'Element',
             'Node'
           ]

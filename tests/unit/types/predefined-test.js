@@ -4,7 +4,7 @@ import EmberObject from '@ember/object';
 import { argument } from '@ember-decorators/argument';
 import {
   Action,
-  ClosureAction,
+  ClassicAction,
   Element,
   Node
 } from '@ember-decorators/argument/types';
@@ -69,8 +69,8 @@ module('Unit | types | predefined types', function() {
   ]);
 
   // Action will also accept `class` since it is an instance of a Function
-  predefinedTypeTest(Action, ['string', 'function', 'class']);
-  predefinedTypeTest(ClosureAction, ['function', 'class']);
+  predefinedTypeTest(Action, ['function', 'class']);
+  predefinedTypeTest(ClassicAction, ['string', 'function', 'class']);
 
   predefinedTypeTest(Element, ['element']);
   predefinedTypeTest(Node, ['element', 'node']);
