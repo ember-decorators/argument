@@ -1,106 +1,49 @@
-import { DEBUG } from '@glimmer/env';
-import { getWithDefault } from '@ember/object';
-import config from 'ember-get-config';
-import makeComputed from './utils/make-computed';
+import { assert } from '@ember/debug';
 
-import { gte } from 'ember-compatibility-helpers';
+import { resolveValidator } from './-private/validators';
+import { addValidationFor } from './-private/validations-for';
+import {
+  hasExtension as hasValidationExtension,
+  withExtension as withValidationExtension
+} from './-private/extensions/with-validation';
+import {
+  needsExtension as needsComponentExtension,
+  hasExtension as hasComponentExtension,
+  withExtension as withComponentExtension
+} from './-private/extensions/prevent-additional-arguments';
 
-import { getValidationsForKey } from '@ember-decorators/argument/-debug';
+export function argument(typeDefinition) {
+  assert(
+    'A type definition must be provided to `@argument`',
+    typeof typeDefinition !== 'undefined'
+  );
+  assert(
+    '`@argument` must be passed a type to validate against',
+    typeDefinition.toString() !== '[object Descriptor]'
+  );
+  assert(
+    '`@argument` must only be passed one type definition',
+    arguments.length === 1
+  );
 
-let valueMap = new WeakMap();
+  const validator = resolveValidator(typeDefinition);
 
-function valuesFor(obj) {
-  if (!valueMap.has(obj)) {
-    valueMap.set(obj, Object.create(null));
-  }
+  return desc => {
+    return {
+      ...desc,
+      finisher(klass) {
+        addValidationFor(klass, desc.key, validator);
 
-  return valueMap.get(obj);
-}
+        if (!hasValidationExtension(klass)) {
+          klass = withValidationExtension(klass);
+        }
 
-let internalArgumentDecorator = function(target, key, desc, options) {
-  if (DEBUG) {
-    let validations = getValidationsForKey(target, key);
-    validations.isArgument = true;
-    validations.typeRequired = getWithDefault(config, '@ember-decorators/argument.typeRequired', false);
-  }
+        if (!hasComponentExtension(klass) && needsComponentExtension(klass)) {
+          klass = withComponentExtension(klass);
+        }
 
-  // always ensure the property is writeable, doesn't make sense otherwise (babel bug?)
-  desc.writable = true;
-  desc.configurable = true;
-
-  if (desc.initializer === null || desc.initializer === undefined) {
-    desc.initializer = undefined;
-    return;
-  }
-
-  let initializer = desc.initializer;
-
-  let get = function() {
-    let values = valuesFor(this);
-
-    if (!Object.hasOwnProperty.call(values, key)) {
-      values[key] = initializer.call(this);
-    }
-
-    return values[key];
+        return klass;
+      }
+    };
   };
-
-  if (options.defaultIfNullish === true || options.defaultIfUndefined === true) {
-    let defaultIf;
-
-    if (options.defaultIfNullish === true) {
-      defaultIf = (v) => v === undefined || v === null;
-    } else {
-      defaultIf = (v) => v === undefined;
-    }
-
-    if (gte('3.1.0')) {
-      return {
-        get,
-        set(value) {
-          if (defaultIf(value)) {
-            valuesFor(this)[key] = initializer.call(this);
-          } else {
-            valuesFor(this)[key] = value;
-          }
-        }
-      };
-    }
-
-    let descriptor = makeComputed({
-      get,
-      set(keyName, value) {
-        if (defaultIf(value)) {
-          return valuesFor(this)[key] = initializer.call(this);
-        } else {
-          return valuesFor(this)[key] = value;
-        }
-      }
-    });
-
-    // Decorators spec doesn't allow us to make a computed directly on
-    // the prototype, so we need to wrap the descriptor in a getter
-    return {
-      get() {
-        return descriptor;
-      }
-    };
-  } else {
-    return {
-      get,
-      set(value) {
-        valuesFor(this)[key] = value;
-      }
-    };
-  }
-}
-
-export function argument(maybeOptions, maybeKey, maybeDesc) {
-  if (typeof maybeKey === 'string' && typeof maybeDesc === 'object') {
-    return internalArgumentDecorator(maybeOptions, maybeKey, maybeDesc, { defaultIfUndefined: false });
-  }
-
-  return function(target, key, desc) {
-    return internalArgumentDecorator(target, key, desc, maybeOptions);
-  }
 }

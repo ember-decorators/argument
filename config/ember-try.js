@@ -1,95 +1,22 @@
-/* eslint-env node */
+'use strict';
+
 const getChannelURL = require('ember-source-channel-url');
 
 module.exports = function() {
   return Promise.all([
     getChannelURL('release'),
     getChannelURL('beta'),
-    getChannelURL('canary'),
-  ]).then((urls) => {
+    getChannelURL('canary')
+  ]).then(urls => {
     return {
       useYarn: true,
       scenarios: [
         {
-          name: 'ember-1.11',
-          bower: {
-            dependencies: {
-              'ember': '~1.11.0',
-              'ember-cli-shims': '0.0.6'
-            },
-            resolutions: {
-              'ember': '~1.11.0',
-              'ember-cli-shims': '0.0.6'
-            }
-          },
+          name: 'minimum-ember-version',
           npm: {
             devDependencies: {
-              'ember-cli-shims': null,
-              'ember-data': null,
-              'ember-source': null
-            }
-          }
-        },
-        {
-          name: 'ember-1.13',
-          bower: {
-            dependencies: {
-              'ember': '~1.13.0',
-              'ember-cli-shims': '0.0.6'
-            },
-            resolutions: {
-              'ember': '~1.13.0',
-              'ember-cli-shims': '0.0.6'
-            }
-          },
-          npm: {
-            devDependencies: {
-              'ember-cli-shims': null,
-              'ember-data': null,
-              'ember-source': null
-            }
-          }
-        },
-        {
-          name: 'ember-lts-2.4',
-          bower: {
-            dependencies: {
-              'ember': 'components/ember#lts-2-4'
-            },
-            resolutions: {
-              'ember': 'lts-2-4'
-            }
-          },
-          npm: {
-            devDependencies: {
-              'ember-data': null,
-              'ember-source': null
-            }
-          }
-        },
-        {
-          name: 'ember-lts-2.8',
-          bower: {
-            dependencies: {
-              'ember': 'components/ember#lts-2-8'
-            },
-            resolutions: {
-              'ember': 'lts-2-8'
-            }
-          },
-          npm: {
-            devDependencies: {
-              'ember-data': null,
-              'ember-source': null
-            }
-          }
-        },
-        {
-          name: 'ember-lts-2.12',
-          npm: {
-            devDependencies: {
-              'ember-data': null,
-              'ember-source': '~2.12.0'
+              'ember-native-class-polyfill': '^1.0.4',
+              'ember-source': '3.4.6'
             }
           }
         },
@@ -122,15 +49,8 @@ module.exports = function() {
           npm: {
             devDependencies: {}
           }
-        },
-        {
-          name: 'ember-default-production',
-          command: 'ember test --environment=production',
-          npm: {
-            devDependencies: {}
-          }
         }
       ]
     };
   });
-}
+};

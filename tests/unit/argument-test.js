@@ -1,193 +1,409 @@
+/* eslint-disable no-unused-vars */
+
+import { module, test, skip } from 'qunit';
 import EmberObject from '@ember/object';
-import { test, module } from 'qunit';
-
-import { gte } from 'ember-compatibility-helpers';
-
+import { addObserver } from '@ember/object/observers';
 import { argument } from '@ember-decorators/argument';
+import { computed } from '@ember-decorators/object';
+import { alias } from '@ember-decorators/object/computed';
 
-module('@argument');
-
-test('it works', function(assert) {
-  class Foo extends EmberObject {
-    @argument
-    bar = 1;
-
-    baz = 2;
-  }
-
-  const foo = Foo.create();
-  const fooWithValues = Foo.create({ bar: 3, baz: 4 });
-
-  assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(foo.get('baz'), 2, 'class field default gets set correctly');
-
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
-  assert.equal(fooWithValues.get('baz'), 2, 'class field default cannot be overriden');
-});
-
-test('it works with the ES class hierarchy', function(assert) {
-  class Foo extends EmberObject {
-    @argument
-    prop = 1;
-
-    @argument
-    anotherProp = 2;
-  }
-
-  class Bar extends Foo {
-    @argument
-    prop = 3;
-
-    anotherProp = 4;
-  }
-
-  class Baz extends Bar {
-    @argument
-    anotherProp = 5;
-  }
-
-  const bar = Bar.create({});
-  const baz = Baz.create({});
-
-  const barWithValues = Bar.create({ prop: 6, anotherProp: 7 });
-  const bazWithValues = Baz.create({ prop: 7, anotherProp: 7 });
-
-  assert.equal(bar.get('prop'), 3, 'argument default can be overriden by subclass');
-  assert.equal(bar.get('anotherProp'), 4, 'argument can be added to subclass');
-
-  assert.equal(barWithValues.get('prop'), 6, 'subclass argument default can be overriden');
-  assert.equal(barWithValues.get('anotherProp'), 4, 'subclass argument default can be overriden');
-
-  assert.equal(baz.get('anotherProp'), 4, 'argument cannot override class field');
-  assert.equal(bazWithValues.get('anotherProp'), 4, 'argument passed in cannot override class field');
-});
-
-test('it works with the ES class hierarchy up the prototype chain', function(assert) {
-  class Foo extends EmberObject {
-    @argument
-    prop = 1;
-  }
-
-  class Bar extends Foo {}
-
-  class Baz extends Bar {}
-
-  class Quix extends Baz {
-    @argument
-    anotherProp = 2;
-  }
-
-  const quix = Quix.create({});
-  const quixWithValues = Baz.create({ prop: 7, anotherProp: 7 });
-
-  assert.equal(quix.get('prop'), 1, 'argument default is set');
-  assert.equal(quix.get('anotherProp'), 2, 'argument default is set');
-
-  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
-  assert.equal(quixWithValues.get('prop'), 7, 'subclass argument default can be overriden');
-});
-
-test('it works with defaultIfUndefined', function(assert) {
-  class Foo extends EmberObject {
-    @argument({ defaultIfUndefined: true })
-    bar = 1;
-  }
-
-  const foo = Foo.create({ bar: undefined });
-  const fooWithValues = Foo.create({ bar: 3 });
-
-  assert.equal(foo.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
-
-  foo.set('bar', undefined);
-  assert.equal(foo.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
-});
-
-test('it works with defaultIfNullish', function(assert) {
-  class Foo extends EmberObject {
-    @argument({ defaultIfNullish: true })
-    bar = 1;
-  }
-
-  const fooWithUndefined = Foo.create({ bar: undefined });
-  const fooWithNull = Foo.create({ bar: null });
-  const fooWithValues = Foo.create({ bar: 3 });
-
-  assert.equal(fooWithUndefined.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithNull.get('bar'), 1, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
-
-  fooWithUndefined.set('bar', null);
-  fooWithNull.set('bar', undefined);
-  assert.equal(fooWithUndefined.get('bar'), 1, 'argument cannot be set to null in repeated usage');
-  assert.equal(fooWithNull.get('bar'), 1, 'argument cannot be set to undefined in repeated usage');
-});
-
-test('it works if no default value was given', function(assert) {
-  class Foo extends EmberObject {
-    @argument
-    bar;
-  }
-
-  const foo = Foo.create();
-  const fooWithValues = Foo.create({ bar: 3 });
-
-  assert.equal(foo.get('bar'), undefined, 'argument default gets set correctly');
-  assert.equal(fooWithValues.get('bar'), 3, 'argument default can be overriden');
-});
-
-if (gte('3.1.0')) {
-  test('works with native getters', function(assert) {
+module('Unit | @argument', function() {
+  test('there are no affects on objects without validation', function(assert) {
     class Foo extends EmberObject {
-      @argument
-      bar = 1;
-
-      baz = 2;
+      prop = 1;
     }
 
-    const foo = Foo.create();
-    const fooWithValues = Foo.create({ bar: 3, baz: 4 });
+    const foo = Foo.create({ prop: 'wrong type' });
 
-    assert.equal(foo.bar, 1, 'argument default gets set correctly');
-    assert.equal(foo.baz, 2, 'class field default gets set correctly');
-
-    assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
-    assert.equal(fooWithValues.baz, 2, 'class field default cannot be overriden');
+    assert.equal(foo.get('prop'), 'wrong type');
   });
 
-  test('it works with defaultIfUndefined and native getters', function(assert) {
+  test('setting the property to the wrong type', function(assert) {
     class Foo extends EmberObject {
-      @argument({ defaultIfUndefined: true })
-      bar = 1;
+      @argument('number')
+      prop = 1;
     }
 
-    const foo = Foo.create({ bar: undefined });
-    const fooWithValues = Foo.create({ bar: 3 });
-
-    assert.equal(foo.bar, 1, 'argument default gets set correctly');
-    assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
-
-    foo.set('bar', undefined);
-    assert.equal(foo.bar, 1, 'argument cannot be set to undefined in repeated usage');
+    assert.throws(function() {
+      Foo.create({ prop: 'wrong type' });
+    }, /Foo#prop expected value of type number during 'init', but received: 'wrong type'/);
   });
 
-  test('it works with defaultIfNullish and native getters', function(assert) {
-    class Foo extends EmberObject {
-      @argument({ defaultIfNullish: true })
-      bar = 1;
+  test('when the default value does not match', function(assert) {
+    class BaseWithWrongType extends EmberObject {
+      @argument('number')
+      prop = 'some value';
     }
 
-    const fooWithUndefined = Foo.create({ bar: undefined });
-    const fooWithNull = Foo.create({ bar: null });
-    const fooWithValues = Foo.create({ bar: 3 });
+    class BaseWithRightType extends BaseWithWrongType {
+      prop = 1;
+    }
 
-    assert.equal(fooWithUndefined.bar, 1, 'argument default gets set correctly');
-    assert.equal(fooWithNull.bar, 1, 'argument default gets set correctly');
-    assert.equal(fooWithValues.bar, 3, 'argument default can be overriden');
+    assert.throws(function() {
+      BaseWithWrongType.create({});
+    }, /BaseWithWrongType#prop expected value of type number during 'init', but received: 'some value'/);
 
-    fooWithUndefined.set('bar', null);
-    fooWithNull.set('bar', undefined);
-    assert.equal(fooWithUndefined.bar, 1, 'argument cannot be set to null in repeated usage');
-    assert.equal(fooWithNull.bar, 1, 'argument cannot be set to undefined in repeated usage');
+    const overrideWrongType = BaseWithWrongType.create({ prop: 1 });
+    assert.equal(
+      overrideWrongType.get('prop'),
+      1,
+      'Overrode the incorrect default type'
+    );
+
+    const rightType = BaseWithRightType.create();
+    assert.equal(rightType.get('prop'), 1, 'Set the default correctly');
   });
-}
+
+  test('it works with the class hierarchy', function(assert) {
+    class Foo extends EmberObject {
+      @argument('string') prop;
+    }
+
+    class Bar extends Foo {}
+
+    class Baz extends Bar {}
+
+    class Quix extends Baz {
+      @argument('number')
+      anotherProp = 2;
+    }
+
+    assert.throws(() => {
+      Quix.create({ prop: 2 });
+    }, /Quix#prop expected value of type string during 'init', but received: 2/);
+
+    assert.throws(() => {
+      Quix.create({ prop: 'val', anotherProp: 'val' });
+    }, /Quix#anotherProp expected value of type number during 'init', but received: 'val'/);
+  });
+
+  test('preventing overriding type in subclass', function(assert) {
+    class Foo extends EmberObject {
+      @argument('number') prop;
+    }
+
+    class Bar extends Foo {
+      @argument('string') prop;
+    }
+
+    assert.throws(() => {
+      Bar.create({ prop: 'some string value' });
+    }, /Bar#prop expected value of type number during 'init', but received: 'some string value'/);
+  });
+
+  module('validating usage', function() {
+    test('ensuring that a type is provided', function(assert) {
+      assert.throws(function() {
+        class Foo extends EmberObject {
+          @argument() bar;
+        }
+      }, /A type definition must be provided to `@argument`/);
+    });
+
+    test('ensuring that `argument` is invoked as a function', function(assert) {
+      assert.throws(function() {
+        class Foo extends EmberObject {
+          @argument bar;
+        }
+      }, /`@argument` must be passed a type to validate against/);
+    });
+
+    test('ensuring only one type is provided', function(assert) {
+      assert.throws(function() {
+        class Foo extends EmberObject {
+          @argument('string', 'number') prop;
+        }
+      }, /`@argument` must only be passed one type definition/);
+    });
+  });
+
+  module('validating the provided type', function() {
+    test('instances are not supported', function(assert) {
+      assert.throws(() => {
+        class Foo extends EmberObject {
+          @argument(2) bar;
+        }
+
+        Foo.create({ bar: 2 });
+      }, /Types must either be a primitive type string, class, validator, or null or undefined, received: 2/);
+
+      assert.throws(() => {
+        class Bar extends EmberObject {
+          @argument(true) bar;
+        }
+
+        Bar.create({ bar: 2 });
+      }, /Types must either be a primitive type string, class, validator, or null or undefined, received: true/);
+    });
+
+    test('checking the name of types', function(assert) {
+      assert.throws(() => {
+        class Foo extends EmberObject {
+          @argument('aoeu') bar;
+        }
+
+        Foo.create({ bar: 2 });
+      }, /Unknown primitive type received: aoeu/);
+    });
+  });
+
+  module('compatibility with Ember', function() {
+    test('typed value can be provided by computed', function(assert) {
+      class Foo extends EmberObject {
+        @argument('number') prop;
+      }
+
+      class Bar extends Foo {
+        value = 123;
+
+        @computed('value')
+        get prop() {
+          return this.value;
+        }
+
+        set prop(value) {
+          this.set('value', value);
+        }
+      }
+
+      const bar = Bar.create();
+
+      // Works by default
+      assert.equal(bar.get('prop'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      bar.set('value', 456);
+      assert.equal(bar.get('prop'), 456, 'can set dependent key');
+
+      // Works when set directly
+      bar.set('prop', 789);
+      assert.equal(bar.get('value'), 789, 'setter works correctly');
+      assert.equal(bar.get('prop'), 789, 'correct value set');
+
+      // Throws when computed returns incorrect value
+      assert.throws(() => {
+        bar.set('value', 'foo');
+        bar.get('prop');
+      }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
+
+      // Throws when set to incorrect value
+      assert.throws(() => {
+        bar.set('prop', 'foo');
+      }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
+    });
+
+    test('typed value can be provided by alias', function(assert) {
+      class Foo extends EmberObject {
+        @argument('number') prop;
+        j;
+      }
+
+      class Bar extends Foo {
+        value = 123;
+
+        @alias('value') prop;
+      }
+
+      const bar = Bar.create();
+
+      // Works by default
+      assert.equal(bar.get('prop'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      bar.set('value', 456);
+      assert.equal(bar.get('prop'), 456, 'can set dependent key');
+
+      // Works when set directly
+      bar.set('prop', 789);
+      assert.equal(bar.get('value'), 789, 'setter works correctly');
+      assert.equal(bar.get('prop'), 789, 'correct value set');
+
+      // Throws when computed returns incorrect value
+      assert.throws(() => {
+        bar.set('value', 'foo');
+        bar.get('prop');
+      }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
+
+      // Throws when set to incorrect value
+      assert.throws(() => {
+        bar.set('prop', 'foo');
+      }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
+    });
+
+    test('typed value can be watched', function(assert) {
+      class Foo extends EmberObject {
+        @argument('number')
+        prop = 123;
+
+        @computed('prop')
+        get watcher() {
+          return this.get('prop');
+        }
+      }
+
+      const foo = Foo.create();
+
+      // Works by default
+      assert.equal(foo.get('watcher'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      foo.set('prop', 456);
+      assert.equal(foo.get('prop'), 456, 'can set dependent key');
+      assert.equal(foo.get('watcher'), 456, 'computed value is updated');
+    });
+
+    test('typed value does not trigger mandatory setter', function(assert) {
+      assert.expect(3);
+
+      class Foo extends EmberObject {
+        init() {
+          super.init();
+
+          addObserver(this, 'prop', () => {
+            assert.ok(true, 'observer called');
+          });
+        }
+
+        @argument('number')
+        prop = 123;
+      }
+
+      const foo = Foo.create();
+
+      // Works by default
+      assert.equal(foo.get('prop'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      foo.set('prop', 456);
+      assert.equal(foo.get('prop'), 456, 'can set dependent key');
+    });
+
+    test('typed native setter does not trigger property notifications if value is unchanged', function(assert) {
+      let value = 0;
+
+      class Foo extends EmberObject {
+        @argument('number')
+        get prop() {
+          return 123;
+        }
+
+        set prop(value) {
+          // do nothing
+        }
+
+        @computed('prop')
+        get otherProp() {
+          return value++;
+        }
+      }
+
+      const foo = Foo.create();
+
+      assert.equal(foo.get('otherProp'), 0, 'computed is correct before');
+
+      foo.set('prop', 123);
+
+      assert.equal(foo.get('otherProp'), 0, 'computed did not change');
+    });
+  });
+
+  module('compatibility with native classes', function() {
+    // Skipped because the native getter/setter in the parent class is currently
+    // clobbered by the definition of the instance property in the constructor
+    // of the base class
+    skip('typed value can be provided by getter/setter', function(assert) {
+      class Foo extends EmberObject {
+        @argument('number') prop;
+      }
+
+      class Bar extends Foo {
+        value = 123;
+
+        get prop() {
+          return this.value;
+        }
+
+        set prop(value) {
+          this.value = value;
+        }
+      }
+
+      const bar = Bar.create();
+
+      // Works by default
+      assert.equal(bar.get('prop'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      bar.value = 456;
+      assert.equal(bar.get('prop'), 456, 'can set dependent key');
+
+      // Works when set directly
+      bar.set('prop', 789);
+      assert.equal(bar.value, 789, 'setter works correctly');
+      assert.equal(bar.get('prop'), 789, 'correct value set');
+
+      // Throws when computed returns incorrect value
+      assert.throws(() => {
+        bar.value = 'foo';
+        bar.get('prop');
+      }, /Bar#prop expected value of type number during 'get', but received: 'foo'/);
+
+      // Throws when set to incorrect value
+      assert.throws(() => {
+        bar.set('prop', 'foo');
+      }, /Bar#prop expected value of type number during 'set', but received: 'foo'/);
+    });
+
+    test('native setters can return a different value than given', function(assert) {
+      assert.expect(3);
+
+      class Foo extends EmberObject {
+        value = 123;
+
+        @argument('number')
+        get prop() {
+          return this.value;
+        }
+
+        set prop(value) {
+          if (typeof value === 'number') {
+            this.value = value;
+          }
+        }
+      }
+
+      const foo = Foo.create();
+
+      // Works by default
+      assert.equal(foo.get('prop'), 123, 'default value provided');
+
+      // Works when dependent key is set
+      foo.set('prop', 456);
+      assert.equal(foo.get('prop'), 456, 'can set dependent key');
+
+      // Setter can choose not to set value
+      foo.set('prop', undefined);
+      assert.equal(foo.get('prop'), 456, 'can set dependent key');
+    });
+
+    test('works with native getters', function(assert) {
+      class Foo extends EmberObject {
+        @argument('number')
+        prop = 123;
+      }
+
+      const foo = Foo.create();
+
+      // Works by default
+      assert.equal(foo.prop, 123, 'default value provided');
+
+      // Works when dependent key is set
+      foo.set('prop', 456);
+      assert.equal(foo.prop, 456, 'no change');
+
+      assert.throws(() => {
+        foo.set('prop', 'bar');
+      }, /Foo#prop expected value of type number during 'set', but received: 'bar'/);
+    });
+  });
+});

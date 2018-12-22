@@ -1,14 +1,20 @@
-import { unionOf } from '@ember-decorators/argument/-debug';
+import unionOf from './-private/types/union-of';
+
+export { default as arrayOf } from './-private/types/array-of';
+export { default as optional } from './-private/types/optional';
+export { default as oneOf } from './-private/types/one-of';
+export { default as shapeOf } from './-private/types/shape-of';
+export { unionOf };
 
 /**
- * Action type, covers both string actions and closure actions
+ * Action type, for "closure actions"
  */
-export const Action = unionOf('string', Function);
+export const Action = Function;
 
 /**
- * Action type, covers both string actions and closure actions
+ * "Classic" Action type, covers both string actions and closure actions
  */
-export const ClosureAction = Function;
+export const ClassicAction = unionOf('string', Function);
 
 /**
  * Element type polyfill for fastboot

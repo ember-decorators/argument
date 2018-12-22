@@ -1,4 +1,3 @@
-/* eslint-env node */
 'use strict';
 
 const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
@@ -10,11 +9,10 @@ function isProductionEnv() {
 
 module.exports = function(defaults) {
   let app = new EmberAddon(defaults, {
-    'ember-cli-babel': {
-      throwUnlessParallelizable: true,
-    },
     trees: {
-      tests: isProductionEnv() ? new Funnel('tests', { exclude: ['unit/-debug'] }) : 'tests'
+      tests: isProductionEnv()
+        ? new Funnel('tests', { exclude: ['unit/-debug'] })
+        : 'tests'
     }
   });
 
