@@ -4,7 +4,7 @@ import { assert } from '@ember/debug';
 import { getValidationsFor } from '../validations-for';
 import { isExtensionOf } from '../utils/object';
 
-const HAS_EXTENSION = Symbol();
+const HAS_EXTENSION = new WeakSet();
 
 const whitelist = {
   ariaRole: true,
@@ -22,10 +22,12 @@ export function needsExtension(klass) {
 }
 
 export function hasExtension(klass) {
-  return klass[HAS_EXTENSION];
+  return HAS_EXTENSION.has(klass);
 }
 
 export function withExtension(klass) {
+  HAS_EXTENSION.add(klass);
+
   return class extends klass {
     static get name() {
       return klass.name;

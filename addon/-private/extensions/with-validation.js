@@ -1,21 +1,17 @@
 import { wrapField } from '../wrap-field';
 import { getValidationsFor } from '../validations-for';
 
-const HAS_VALIDATION = Symbol();
+const HAS_VALIDATION = new WeakSet();
 
 export function hasExtension(klass) {
-  return klass[HAS_VALIDATION];
+  return HAS_VALIDATION.has(klass);
 }
 
 /**
  * Extend the class using native classes to inject validation logic
  */
 export function withExtension(klass) {
-  if (klass[HAS_VALIDATION]) {
-    return klass;
-  }
-
-  klass[HAS_VALIDATION] = true;
+  HAS_VALIDATION.add(klass);
 
   return class extends klass {
     static get name() {
