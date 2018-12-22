@@ -7,8 +7,6 @@ import {
 } from './utils/computed';
 import { getPropertyDescriptor } from './utils/object';
 
-import { TypeError } from './errors';
-
 const notifyPropertyChange =
   Ember.notifyPropertyChange || Ember.propertyDidChange;
 
@@ -126,7 +124,7 @@ class ComputedValidatedProperty extends ValidatedProperty {
 function runValidator(validator, klass, key, value, phase) {
   if (validator(value) === false) {
     let formattedValue = typeof value === 'string' ? `'${value}'` : value;
-    throw new TypeError(
+    throw new Error(
       `${
         klass.name
       }#${key} expected value of type ${validator} during '${phase}', but received: ${formattedValue}`
