@@ -42,43 +42,41 @@ For primitives types, the name should be provided as a string (as with `string` 
 
 There are also a number of helpers that can be used to validate against a more complex or specific type:
 
-- `unionOf`: Produces a union type from the specified types
 - `arrayOf`: Produces a type for an array of specific types
+- `oneOf` : Produces a type that literally matches one of the given strings
+- `optional`: Produces an optional / nullable type that, in addition to the type that was passed in,
+  also allows `null` and `undefined`.
 - `shapeOf`: Accepts an object of key -> type pairs, and checks the shape of the field to make sure it
   matches the object passed in. The validator only checks to make sure that the fields exist and are their
   proper types, so it is valid for all objects which fulfill the shape (structural typing)
-- `optional`: Produces an optional / nullable type that, in addition to the type that was passed in,
-  also allows `null` and `undefined`.
+- `unionOf`: Produces a union type from the specified types
 
 ```js
 import Component from '@ember/component';
 import { argument } from '@ember-decorators/argument';
-import { arrayOf, unionOf, optional } from '@ember-decorators/argument/types';
+import {
+  arrayOf,
+  oneOf,
+  optional,
+  shapeOf,
+  unionOf
+} from '@ember-decorators/argument/types';
 
 export default class ExampleComponent extends Component {
-  @argument(unionOf(null, 'string'))
-  arg = 'default';
-
-  @argument(unionOf(undefined, Date))
-  foo;
-
-  @argument(unionOf('string', 'number', Date))
-  bar;
-
-  @argument(optional(Date))
-  optionalDate; // can be either `null`, `undefined` or an instance of ´Date
-
-  @argument(unionOf(null, undefined, Date))
-  optionalThroughUnion; // this is virtually identical to `optionalDate`
-
   @argument(arrayOf('string'))
   stringArray;
 
-  @argument(arrayOf('any'))
-  anyArray;
+  @argument(oneOf('red', 'blue', 'yellow'))
+  primaryColor;
 
-  @argument(arrayOf(unionOf('string', 'number', Element)))
-  unionArray;
+  @argument(optional(Date))
+  optionalDate;
+
+  @argument(shapeOf({ id: 'string' }))
+  objectWithId;
+
+  @argument(unionOf('number', 'string'))
+  numberOrString;
 }
 ```
 
