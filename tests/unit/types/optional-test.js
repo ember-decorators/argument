@@ -29,11 +29,11 @@ module('Unit | types | optional', function() {
 
     assert.throws(() => {
       Foo.create({ bar: 2 });
-    }, /Foo#bar expected value of type optional\(string\) during 'init', but received: 2/);
+    }, /Foo#bar expected value of type optional\(string\) during 'set', but received: 2/);
 
     assert.throws(() => {
       Foo.create({ bar: new Date() });
-    }, /Foo#bar expected value of type optional\(string\) during 'init', but received/);
+    }, /Foo#bar expected value of type optional\(string\) during 'set', but received/);
   });
 
   test('it requires primitive types or classes', function(assert) {

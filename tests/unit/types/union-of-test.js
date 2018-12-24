@@ -26,11 +26,11 @@ module('Unit | types | unionOf', function() {
 
     assert.throws(() => {
       Foo.create({ bar: null });
-    }, /Foo#bar expected value of type unionOf\(string,undefined\) during 'init', but received: null/);
+    }, /Foo#bar expected value of type unionOf\(string,undefined\) during 'set', but received: null/);
 
     assert.throws(() => {
       Foo.create({ bar: new Date() });
-    }, /Foo#bar expected value of type unionOf\(string,undefined\) during 'init', but received/);
+    }, /Foo#bar expected value of type unionOf\(string,undefined\) during 'set', but received/);
   });
 
   test('it requires primitive types or classes', function(assert) {

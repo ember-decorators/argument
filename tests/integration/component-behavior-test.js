@@ -31,7 +31,7 @@ module('Integration | Component Behavior', function(hooks) {
 
     assert.equal(
       error.message,
-      "FooComponent#foo expected value of type string during 'init', but received: 123"
+      "FooComponent#foo expected value of type string during 'set', but received: 123"
     );
   });
 

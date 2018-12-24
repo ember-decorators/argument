@@ -35,7 +35,7 @@ module('Unit | types | shapeOf', function() {
       }
 
       Foo.create({ bar: { qux: 'baz' } });
-    }, /Foo#bar expected value of type shapeOf\({foo:string}\) during 'init', but received: an instance of `Object`/);
+    }, /Foo#bar expected value of type shapeOf\({foo:string}\) during 'set', but received: an instance of `Object`/);
   });
 
   test('it throws if type does not match', function(assert) {
@@ -46,7 +46,7 @@ module('Unit | types | shapeOf', function() {
       }
 
       Foo.create({ bar: 2 });
-    }, /Foo#bar expected value of type shapeOf\({foo:string}\) during 'init', but received: 2/);
+    }, /Foo#bar expected value of type shapeOf\({foo:string}\) during 'set', but received: 2/);
   });
 
   test('it throws if non-object passed in', function(assert) {

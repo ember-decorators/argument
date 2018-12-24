@@ -26,7 +26,7 @@ module('Unit | @argument', function() {
 
     assert.throws(function() {
       Foo.create({ prop: 'wrong type' });
-    }, /Foo#prop expected value of type number during 'init', but received: 'wrong type'/);
+    }, /Foo#prop expected value of type number during 'set', but received: 'wrong type'/);
   });
 
   test('when the default value does not match', function(assert) {
@@ -70,11 +70,11 @@ module('Unit | @argument', function() {
 
     assert.throws(() => {
       Quix.create({ prop: 2 });
-    }, /Quix#prop expected value of type string during 'init', but received: 2/);
+    }, /Quix#prop expected value of type string during 'set', but received: 2/);
 
     assert.throws(() => {
       Quix.create({ prop: 'val', anotherProp: 'val' });
-    }, /Quix#anotherProp expected value of type number during 'init', but received: 'val'/);
+    }, /Quix#anotherProp expected value of type number during 'set', but received: 'val'/);
   });
 
   test('preventing overriding type in subclass', function(assert) {

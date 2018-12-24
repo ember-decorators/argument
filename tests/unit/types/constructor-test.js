@@ -17,7 +17,7 @@ module('Unit | types | constructor', function() {
 
     assert.throws(function() {
       Foo.create({ bar: new OtherThing() });
-    }, /Foo#bar expected value of type `Thing` during 'init', but received: an instance of `OtherThing`/);
+    }, /Foo#bar expected value of type `Thing` during 'set', but received: an instance of `OtherThing`/);
   });
 
   test('matching against a built-in constructor', function(assert) {
@@ -29,7 +29,7 @@ module('Unit | types | constructor', function() {
 
     assert.throws(function() {
       Foo.create({ bar: 'test' });
-    }, /Foo#bar expected value of type `Boolean` during 'init', but received: 'test'/);
+    }, /Foo#bar expected value of type `Boolean` during 'set', but received: 'test'/);
   });
 
   test('working with helpers', function(assert) {
