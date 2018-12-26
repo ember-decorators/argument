@@ -1,6 +1,24 @@
-import { assert } from '@ember/debug';
-import { resolveValidator, makeValidator } from '../validators';
 import { isArray } from '@ember/array';
+import { assert } from '@ember/debug';
+
+import resolveValidator from '../resolve-validator';
+import BaseValidator from '../validators/-base';
+
+class ArrayOfValidator extends BaseValidator {
+  constructor(validator) {
+    super();
+
+    this.validator = validator;
+  }
+
+  toString() {
+    return `arrayOf(${this.validator})`;
+  }
+
+  check(value) {
+    return isArray(value) && value.every(value => this.validator.check(value));
+  }
+}
 
 export default function arrayOf(type) {
   assert(
@@ -10,7 +28,5 @@ export default function arrayOf(type) {
 
   const validator = resolveValidator(type);
 
-  return makeValidator(`arrayOf(${validator})`, value => {
-    return isArray(value) && value.every(validator);
-  });
+  return new ArrayOfValidator(validator);
 }
