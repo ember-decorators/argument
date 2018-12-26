@@ -7,18 +7,6 @@ export default class InstanceOfValidator extends BaseValidator {
     this.klass = klass;
   }
 
-  formatValue(value) {
-    if (value === null) {
-      return `null`;
-    }
-
-    if (value === undefined) {
-      return `undefined`;
-    }
-
-    return `an instance of \`${value.constructor.name}\``;
-  }
-
   toString() {
     return `\`${this.klass.name}\``;
   }

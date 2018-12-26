@@ -22,7 +22,7 @@ module('Unit | types | arrayOf', function() {
       }
 
       Foo.create({ bar: ['baz', 2] });
-    }, /Foo#bar expected value of type arrayOf\(string\) during 'init', but received: baz,2/);
+    }, /Foo#bar expected value of type arrayOf\(string\) during 'init', but received: \['baz', 2\]/);
   });
 
   test('it throws if type does not match', function(assert) {
