@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+
 import { test, module } from 'qunit';
 import EmberObject from '@ember/object';
 
@@ -89,8 +91,6 @@ module('Unit | types | optional', function() {
         @argument(optional(null))
         bar;
       }
-
-      Foo.create({ bar: 2 });
     }, /Passsing 'null' to the 'optional' helper does not make sense./);
 
     assert.throws(() => {
@@ -98,8 +98,6 @@ module('Unit | types | optional', function() {
         @argument(optional(undefined))
         bar;
       }
-
-      Foo.create({ bar: 2 });
     }, /Passsing 'undefined' to the 'optional' helper does not make sense./);
   });
 });
