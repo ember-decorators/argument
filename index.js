@@ -63,6 +63,7 @@ module.exports = {
         imports: {
           '@ember-decorators/argument': ['argument'],
           '@ember-decorators/argument/types': [
+            'Any',
             'arrayOf',
             'optional',
             'oneOf',
