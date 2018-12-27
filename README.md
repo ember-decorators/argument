@@ -100,7 +100,54 @@ ember install @ember-decorators/argument
 
 ## Configuration
 
-### `enableCodeStripping`
+### Run-Time
+
+#### `argumentWhitelist`
+
+**Type**: `Array` or `Object` | **Default**: `[]`
+
+Once `@argument` has been applied to a component, unexpected arguments passed to a component will result in an error. In order to work with some addons that expect you to provide additional arguments to your components, you can whitelist additional properties that should be ignored.
+
+When provided an array of `string`, those exact properties will be added to the whitelist.
+
+To provide a more flexible solution, you can also provide an object with the following structure:
+
+```javascript
+shapeOf({
+  // Whitelist any string starting with one of these values
+  startsWith: optional(arrayOf('string'))
+  // Whitelist any string ending with one of these values
+  endsWith: optional(arrayOf('string'))
+  // Whitelist any string that include one of these values anywhere
+  includes: optional(arrayOf('string'))
+  // Whitelist any string that exactly matches one of these values
+  matches: optional(arrayOf('string'))
+})
+```
+
+##### Example
+
+```javascript
+// config/environment.js
+module.exports = function(environment) {
+  let ENV = {
+    // ...
+    '@ember-decorators/argument': {
+      argumentWhitelist: {
+        startsWith: ['hotReloadCUSTOM']
+      }
+    }
+  };
+
+  // ...
+
+  return ENV;
+};
+```
+
+### Build-Time
+
+#### `enableCodeStripping`
 
 **Type**: `Boolean` | **Default**: `true`
 
@@ -108,7 +155,7 @@ By default most of the code provided by this addon is removed in a Production bu
 
 However, if the process seems buggy or you want the validation in production, setting this flag to `false` will prevent any code from being removed.
 
-#### Example
+##### Example
 
 ```javascript
 // ember-cli-build.js

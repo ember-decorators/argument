@@ -124,4 +124,19 @@ module('Integration | Component Behavior', function(hooks) {
       }}
     `);
   });
+
+  test('does not assert on attributes added to the whitelist', async function(assert) {
+    assert.expect(0);
+
+    class FooComponent extends ComponentWithArgument {}
+
+    this.owner.register('component:foo-component', FooComponent);
+
+    await render(hbs`
+      {{foo-component
+        exact-attribute='something'
+        hotReloadCUSTOMName='something'
+      }}
+    `);
+  });
 });
