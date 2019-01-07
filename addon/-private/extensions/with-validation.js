@@ -1,6 +1,9 @@
 import Ember from 'ember';
 
-import wrapComputedProperty from '../wrap-computed-property';
+import {
+  isComputedProperty,
+  wrapComputedProperty
+} from '../wrap-computed-property';
 import { getValidationsFor } from '../validations-for';
 
 const HAS_VALIDATION = new WeakSet();
@@ -31,7 +34,9 @@ export function withExtension(klass) {
       for (let key in validations) {
         const validation = validations[key];
 
-        wrapComputedProperty(constructor, this, meta, validation, key);
+        if (isComputedProperty(meta, key)) {
+          wrapComputedProperty(constructor, this, meta, validation, key);
+        }
 
         validation.run(constructor, key, this[key], 'init');
       }

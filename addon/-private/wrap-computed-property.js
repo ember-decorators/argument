@@ -44,34 +44,37 @@ class ComputedValidatedProperty {
   }
 }
 
-export default function wrapComputedProperty(
+export function isComputedProperty(meta, key) {
+  const possibleDesc = meta.peekDescriptors(key);
+
+  return possibleDesc && possibleDesc.isDescriptor;
+}
+
+export function wrapComputedProperty(
   klass,
   instance,
   meta,
   typeValidators,
   key
 ) {
-  const possibleDesc = meta.peekDescriptors(key);
+  const desc = meta.peekDescriptors(key);
 
-  // Handle the argument being overwritten by a computed property
-  if (possibleDesc && possibleDesc.isDescriptor) {
-    let originalValue = possibleDesc.get(instance, key);
+  let originalValue = desc.get(instance, key);
 
-    let validatedProperty = new ComputedValidatedProperty(
-      possibleDesc,
-      klass,
-      originalValue,
-      typeValidators
-    );
+  let validatedProperty = new ComputedValidatedProperty(
+    desc,
+    klass,
+    originalValue,
+    typeValidators
+  );
 
-    Object.defineProperty(instance, key, {
-      configurable: true,
-      enumerable: true,
-      get() {
-        return validatedProperty.get(instance, key);
-      }
-    });
+  Object.defineProperty(instance, key, {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return validatedProperty.get(instance, key);
+    }
+  });
 
-    meta.writeDescriptors(key, validatedProperty);
-  }
+  meta.writeDescriptors(key, validatedProperty);
 }
