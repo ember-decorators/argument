@@ -24,15 +24,15 @@ class ValidatedProperty {
     this.originalValue = originalValue;
     this.typeValidators = typeValidators;
 
-    runValidator(typeValidators, klass, keyName, originalValue, 'init');
+    typeValidators.run(klass, keyName, originalValue, 'init');
   }
 
   get(obj, keyName) {
     let { klass, typeValidators } = this;
     let newValue = this._get(obj, keyName);
 
-    if (typeValidators.length > 0) {
-      runValidator(typeValidators, klass, keyName, newValue, 'get');
+    if (typeValidators) {
+      typeValidators.run(klass, keyName, newValue, 'get');
     }
 
     return newValue;
@@ -42,8 +42,8 @@ class ValidatedProperty {
     let { klass, typeValidators } = this;
     let newValue = this._set(obj, keyName, value);
 
-    if (typeValidators.length > 0) {
-      runValidator(typeValidators, klass, keyName, newValue, 'set');
+    if (typeValidators) {
+      typeValidators.run(klass, keyName, newValue, 'set');
     }
 
     return newValue;
@@ -118,17 +118,6 @@ class ComputedValidatedProperty extends ValidatedProperty {
 
   _set(obj, keyName, value) {
     return this.desc.set(obj, keyName, value);
-  }
-}
-
-function runValidator(validator, klass, key, value, phase) {
-  if (validator(value) === false) {
-    let formattedValue = typeof value === 'string' ? `'${value}'` : value;
-    throw new Error(
-      `${
-        klass.name
-      }#${key} expected value of type ${validator} during '${phase}', but received: ${formattedValue}`
-    );
   }
 }
 

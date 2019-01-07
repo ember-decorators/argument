@@ -1,5 +1,13 @@
 import { assert } from '@ember/debug';
-import { makeValidator } from '../validators';
+
+import { OrValidator } from '../combinators/or';
+import ValueMatchValidator from '../validators/value-match';
+
+class OneOfValidator extends OrValidator {
+  toString() {
+    return `oneOf(${this.validators.join()})`;
+  }
+}
 
 export default function oneOf(...list) {
   assert(
@@ -11,7 +19,7 @@ export default function oneOf(...list) {
     list.every(item => typeof item === 'string')
   );
 
-  return makeValidator(`oneOf(${list.join()})`, value => {
-    return list.includes(value);
-  });
+  const validators = list.map(value => new ValueMatchValidator(value));
+
+  return new OneOfValidator(...validators);
 }

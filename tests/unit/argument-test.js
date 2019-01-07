@@ -195,7 +195,6 @@ module('Unit | @argument', function() {
     test('typed value can be provided by alias', function(assert) {
       class Foo extends EmberObject {
         @argument('number') prop;
-        j;
       }
 
       class Bar extends Foo {

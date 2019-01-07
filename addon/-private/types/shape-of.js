@@ -1,6 +1,37 @@
 import { assert } from '@ember/debug';
 import { get } from '@ember/object';
-import { resolveValidator, makeValidator } from '../validators';
+
+import resolveValidator from '../resolve-validator';
+import BaseValidator from '../validators/-base';
+
+class ShapeOfValidator extends BaseValidator {
+  constructor(shape) {
+    super();
+
+    this.shape = {};
+    this.typeDesc = [];
+
+    for (let key in shape) {
+      this.shape[key] = resolveValidator(shape[key]);
+
+      this.typeDesc.push(`${key}:${shape[key]}`);
+    }
+  }
+
+  toString() {
+    return `shapeOf({${this.typeDesc.join()}})`;
+  }
+
+  check(value) {
+    for (let key in this.shape) {
+      if (this.shape[key].check(get(value, key)) !== true) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+}
 
 export default function shapeOf(shape) {
   assert(
@@ -16,21 +47,5 @@ export default function shapeOf(shape) {
     Object.keys(shape).length > 0
   );
 
-  let typeDesc = [];
-
-  for (let key in shape) {
-    shape[key] = resolveValidator(shape[key]);
-
-    typeDesc.push(`${key}:${shape[key]}`);
-  }
-
-  return makeValidator(`shapeOf({${typeDesc.join()}})`, value => {
-    for (let key in shape) {
-      if (shape[key](get(value, key)) !== true) {
-        return false;
-      }
-    }
-
-    return true;
-  });
+  return new ShapeOfValidator(shape);
 }

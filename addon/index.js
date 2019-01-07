@@ -1,6 +1,6 @@
 import { assert } from '@ember/debug';
 
-import { resolveValidator } from './-private/validators';
+import resolveValidator from './-private/resolve-validator';
 import { addValidationFor } from './-private/validations-for';
 import {
   hasExtension as hasValidationExtension,

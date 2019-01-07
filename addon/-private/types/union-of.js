@@ -1,5 +1,13 @@
 import { assert } from '@ember/debug';
-import { resolveValidator, makeValidator } from '../validators';
+
+import resolveValidator from '../resolve-validator';
+import { OrValidator } from '../combinators/or';
+
+class UnionOfValidator extends OrValidator {
+  toString() {
+    return `unionOf(${this.validators.join()})`;
+  }
+}
 
 export default function unionOf(...types) {
   assert(
@@ -9,7 +17,5 @@ export default function unionOf(...types) {
 
   const validators = types.map(resolveValidator);
 
-  return makeValidator(`unionOf(${validators.join()})`, value => {
-    return validators.some(validator => validator(value));
-  });
+  return new UnionOfValidator(...validators);
 }

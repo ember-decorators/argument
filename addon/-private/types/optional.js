@@ -1,8 +1,23 @@
 import { assert } from '@ember/debug';
-import { resolveValidator, makeValidator } from '../validators';
 
-const nullValidator = resolveValidator(null);
-const undefinedValidator = resolveValidator(undefined);
+import resolveValidator from '../resolve-validator';
+import {
+  NULL as NULL_VALUE,
+  UNDEFINED as UNDEFINED_VALUE
+} from '../validators/value-match';
+import { OrValidator } from '../combinators/or';
+
+class OptionalValidator extends OrValidator {
+  constructor(validator) {
+    super(NULL_VALUE, UNDEFINED_VALUE, validator);
+
+    this.originalValidator = validator;
+  }
+
+  toString() {
+    return `optional(${this.originalValidator})`;
+  }
+}
 
 export default function optional(type) {
   assert(
@@ -11,20 +26,15 @@ export default function optional(type) {
   );
 
   const validator = resolveValidator(type);
-  const validatorDesc = validator.toString();
 
   assert(
     `Passsing 'null' to the 'optional' helper does not make sense.`,
-    validatorDesc !== 'null'
+    validator.toString() !== 'null'
   );
   assert(
     `Passsing 'undefined' to the 'optional' helper does not make sense.`,
-    validatorDesc !== 'undefined'
+    validator.toString() !== 'undefined'
   );
 
-  return makeValidator(
-    `optional(${validator})`,
-    value =>
-      nullValidator(value) || undefinedValidator(value) || validator(value)
-  );
+  return new OptionalValidator(validator);
 }

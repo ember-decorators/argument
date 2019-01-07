@@ -27,7 +27,11 @@ When rendering a component that uses `@argument`, the initial value of the prope
 
 In addition, any unexpected arguments to a component will also cause an error.
 
-### Defining Types
+## Defining Types
+
+The `@argument` decorator takes a definition for what kind of value the property should be set to. Usually, this will represent the type of the value.
+
+### Primitive Types
 
 For primitives types, the name should be provided as a string (as with `string` in the example above). The available types match those of Typescript, including:
 
@@ -88,6 +92,28 @@ In addition, this library includes several predefined types for convenience:
 - `Node` - Fastboot safe type alias for `window.Node`
 
 These types can also be imported from `@ember-decorators/argument/types`
+
+### Class Instances
+
+The `@argument` decorator can also take a class constructor to validate that the property value is an instance of that class
+
+```js
+import Component from '@ember/component';
+import { argument } from '@ember-decorators/argument';
+
+class Task {
+  constructor() {
+    this.complete = false;
+  }
+}
+
+export default class TaskComponent extends Component {
+  @argument(Task)
+  task;
+}
+```
+
+Passing a class works with all of the type helpers mentioned above.
 
 ## Installation
 
