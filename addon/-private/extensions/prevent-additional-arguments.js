@@ -1,21 +1,23 @@
 import Component from '@ember/component';
 import { assert } from '@ember/debug';
 
+import { argumentWhitelist } from '../config';
 import { getValidationsFor } from '../validations-for';
 import { isExtensionOf } from '../utils/object';
 
 const HAS_EXTENSION = new WeakSet();
 
-const whitelist = {
-  ariaRole: true,
-  class: true,
-  classNames: true,
-  id: true,
-  isVisible: true,
-  tagName: true,
-  target: true,
-  __ANGLE_ATTRS__: true
-};
+const whitelist = [
+  'ariaRole',
+  'class',
+  'classNames',
+  'id',
+  'isVisible',
+  'tagName',
+  'target',
+  '__ANGLE_ATTRS__',
+  ...argumentWhitelist
+];
 
 export function needsExtension(klass) {
   return isExtensionOf(klass, Component);
@@ -47,12 +49,17 @@ export function withExtension(klass) {
         binding => binding.split(':')[0]
       );
 
+      const expectedArguments = [
+        ...attributes,
+        ...classNames,
+        ...Object.keys(validations),
+        ...whitelist
+      ];
+
       for (let key in this.attrs) {
-        const isValidArgOrAttr =
-          key in validations ||
-          key in whitelist ||
-          attributes.indexOf(key) !== -1 ||
-          classNames.indexOf(key) !== -1;
+        const isValidArgOrAttr = expectedArguments.some(matcher =>
+          key.match(matcher)
+        );
 
         assert(
           `Attempted to assign the argument '${key}' on an instance of ${
