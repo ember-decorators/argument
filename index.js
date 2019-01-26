@@ -5,6 +5,8 @@ const Funnel = require('broccoli-funnel');
 const VersionChecker = require('ember-cli-version-checker');
 const log = require('debug')('ember-decorators:argument');
 
+const FILTER_IMPORTS_LABEL = 'filter-imports:@ember-decorators/argument';
+
 function isProductionEnv() {
   return /production/.test(process.env.EMBER_ENV);
 }
@@ -57,26 +59,33 @@ module.exports = {
   },
 
   stripImports(babelOptions) {
-    babelOptions.plugins.push([
-      require.resolve('babel-plugin-filter-imports'),
-      {
-        imports: {
-          '@ember-decorators/argument': ['argument'],
-          '@ember-decorators/argument/types': [
-            'Any',
-            'arrayOf',
-            'optional',
-            'oneOf',
-            'shapeOf',
-            'unionOf',
-            'Action',
-            'ClassicAction',
-            'Element',
-            'Node'
-          ]
-        }
-      }
-    ]);
+    const alreadyHasPlugin = babelOptions.plugins
+      .filter(definition => Array.isArray(definition))
+      .some(definition => definition[2] === FILTER_IMPORTS_LABEL);
+
+    if (!alreadyHasPlugin) {
+      babelOptions.plugins.push([
+        require.resolve('babel-plugin-filter-imports'),
+        {
+          imports: {
+            '@ember-decorators/argument': ['argument'],
+            '@ember-decorators/argument/types': [
+              'Any',
+              'arrayOf',
+              'optional',
+              'oneOf',
+              'shapeOf',
+              'unionOf',
+              'Action',
+              'ClassicAction',
+              'Element',
+              'Node'
+            ]
+          }
+        },
+        'filter-imports:@ember-decorators/argument'
+      ]);
+    }
   },
 
   included(app) {
