@@ -117,7 +117,7 @@ module.exports = {
         this.stripImports(parentOptions.babel);
       } else {
         app.project.ui.writeWarnLine(
-          '@ember-decorators/argument: You are using an unsupported ember-cli-babel version,' +
+          '@ember-decorators/argument: You are using an unsupported ember-cli-babel version, ' +
             'decorators will not be stripped automatically'
         );
       }
