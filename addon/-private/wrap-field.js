@@ -154,6 +154,7 @@ export function wrapField(klass, instance, validations, keyName) {
     let desc = getPropertyDescriptor(instance, keyName);
 
     if (
+      typeof desc === 'object' &&
       (typeof desc.get === 'function' || typeof desc.set === 'function') &&
       !isMandatorySetter(desc.set)
     ) {

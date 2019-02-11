@@ -7,7 +7,7 @@
  * @return {Descriptor|undefined}
  */
 export function getPropertyDescriptor(target, property) {
-  if (target === undefined) return;
+  if (target === undefined || target === null) return;
 
   return (
     Object.getOwnPropertyDescriptor(target, property) ||
