@@ -8,7 +8,7 @@ import {
 import { getPropertyDescriptor } from './utils/object';
 
 const notifyPropertyChange =
-  Ember.notifyPropertyChange || Ember.propertyDidChange;
+  Ember.notifyPropertyChange || Ember.propertyDidChange; // eslint-disable-line
 
 function guardBind(fn, ...args) {
   if (typeof fn === 'function') {
