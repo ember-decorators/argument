@@ -24,7 +24,7 @@ module('Unit | types | oneOf', function() {
       }
 
       Foo.create({ bar: 'magenta' });
-    }, /Foo#bar expected value of type oneOf\(red,blue,green\) during 'init', but received: 'magenta'/);
+    }, /Foo#bar expected value of type oneOf\(red,blue,green\) during 'set', but received: 'magenta'/);
   });
 
   test('it throws if non-string passed in', function(assert) {

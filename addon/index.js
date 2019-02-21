@@ -2,6 +2,7 @@ import { assert } from '@ember/debug';
 
 import resolveValidator from './-private/resolve-validator';
 import { addValidationFor } from './-private/validations-for';
+import wrapDescriptor from './-private/wrap-descriptor';
 import {
   hasExtension as hasValidationExtension,
   withExtension as withValidationExtension
@@ -29,8 +30,10 @@ export function argument(typeDefinition) {
   const validator = resolveValidator(typeDefinition);
 
   return desc => {
+    const descriptorWithValidation = wrapDescriptor(desc, validator);
+
     return {
-      ...desc,
+      ...descriptorWithValidation,
       finisher(klass) {
         addValidationFor(klass, desc.key, validator);
 
