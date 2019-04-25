@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { notifyPropertyChange } from '@ember/object';
 
 import {
   isMandatorySetter,
@@ -6,9 +7,6 @@ import {
   isDescriptorTrap
 } from './utils/computed';
 import { getPropertyDescriptor } from './utils/object';
-
-const notifyPropertyChange =
-  Ember.notifyPropertyChange || Ember.propertyDidChange;
 
 function guardBind(fn, ...args) {
   if (typeof fn === 'function') {
