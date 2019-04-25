@@ -19,7 +19,7 @@ export function argument(typeDefinition) {
   );
   assert(
     '`@argument` must be passed a type to validate against',
-    typeDefinition.toString() !== '[object Descriptor]'
+    !(typeDefinition instanceof Object && typeof arguments[1] === 'string')
   );
   assert(
     '`@argument` must only be passed one type definition',
@@ -28,22 +28,18 @@ export function argument(typeDefinition) {
 
   const validator = resolveValidator(typeDefinition);
 
-  return desc => {
-    return {
-      ...desc,
-      finisher(klass) {
-        addValidationFor(klass, desc.key, validator);
+  return (target, key, desc) => {
+    let klass = target.constructor;
+    addValidationFor(klass, key, validator);
 
-        if (!hasValidationExtension(klass)) {
-          klass = withValidationExtension(klass);
-        }
+    if (!hasValidationExtension(klass)) {
+      withValidationExtension(klass);
+    }
 
-        if (!hasComponentExtension(klass) && needsComponentExtension(klass)) {
-          klass = withComponentExtension(klass);
-        }
+    if (!hasComponentExtension(klass) && needsComponentExtension(klass)) {
+      withComponentExtension(klass);
+    }
 
-        return klass;
-      }
-    };
+    return desc;
   };
 }

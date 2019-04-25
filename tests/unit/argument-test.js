@@ -4,8 +4,8 @@ import { module, test, skip } from 'qunit';
 import EmberObject from '@ember/object';
 import { addObserver } from '@ember/object/observers';
 import { argument } from '@ember-decorators/argument';
-import { computed } from '@ember-decorators/object';
-import { alias } from '@ember-decorators/object/computed';
+import { computed } from '@ember/object';
+import { alias } from '@ember/object/computed';
 
 module('Unit | @argument', function() {
   test('there are no affects on objects without validation', function(assert) {

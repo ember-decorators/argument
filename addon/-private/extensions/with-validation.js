@@ -1,3 +1,6 @@
+import collapseProto from '@ember-decorators/utils/collapse-proto';
+import { afterMethod } from 'patch-method';
+
 import { wrapField } from '../wrap-field';
 import { getValidationsFor } from '../validations-for';
 
@@ -13,19 +16,13 @@ export function hasExtension(klass) {
 export function withExtension(klass) {
   HAS_VALIDATION.add(klass);
 
-  return class extends klass {
-    static get name() {
-      return klass.name;
+  collapseProto(klass.prototype);
+
+  afterMethod(klass, 'init', function() {
+    const validations = getValidationsFor(this.constructor);
+
+    for (let key in validations) {
+      wrapField(this.constructor, this, validations, key);
     }
-
-    init(...args) {
-      super.init(...args);
-
-      const validations = getValidationsFor(this.constructor);
-
-      for (let key in validations) {
-        wrapField(this.constructor, this, validations, key);
-      }
-    }
-  };
+  });
 }
